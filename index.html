@@ -197,10 +197,6 @@ async function init(){
   }
  });
 }
-
- 
- 
-
 async function enterApp(user){
  currentUser=user;const {data:profile,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
  if(error||!profile||!["admin","staff"].includes(profile.role)){await sb.auth.signOut();msg($("authMsg"),"This account has no JAIDEV admin/staff permission. Ask the administrator to assign a role.",true);return}
