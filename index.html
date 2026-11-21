@@ -38,7 +38,7 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
   margin:0;
   border:0;
   border-radius:0;
-  padding:12px 16px 24px;
+  padding:4px 16px 24px;
   text-align:center;
   box-shadow:none;
   background:#fff;
@@ -275,7 +275,39 @@ $("addLinkBtn").addEventListener("click", function(e) {
 }, true);
  
 })();
-})();
+async function moveLink(id,delta){
+  const {data,error}=await sb
+    .from("business_links")
+    .select("*")
+    .eq("customer_id",selectedCustomer.id)
+    .order("position");
+
+  if(error){toast(error.message);return}
+
+  const a=data||[];
+  const i=a.findIndex(x=>x.id===id);
+  const j=i+delta;
+
+  if(i<0||j<0||j>=a.length)return;
+
+  const first=a[i];
+  const second=a[j];
+  const temp=Math.max(0,...a.map(x=>Number(x.position)||0))+1000;
+
+  let r=await sb.from("business_links")
+    .update({position:temp}).eq("id",first.id);
+  if(r.error){toast(r.error.message);return}
+
+  r=await sb.from("business_links")
+    .update({position:first.position}).eq("id",second.id);
+  if(r.error){toast(r.error.message);return}
+
+  r=await sb.from("business_links")
+    .update({position:second.position}).eq("id",first.id);
+  if(r.error){toast(r.error.message);return}
+
+  await loadLinks();
+  })();
 </script>async function moveLink(id,delta){
  const {data}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");const a=data||[],i=a.findIndex(x=>x.id===id),j=i+delta;if
 </body></html>
