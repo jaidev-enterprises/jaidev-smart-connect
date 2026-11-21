@@ -275,6 +275,7 @@ $("addLinkBtn").addEventListener("click", function(e) {
 }, true);
  
 })();
+})();
 </script>async function moveLink(id,delta){
  const {data}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");const a=data||[],i=a.findIndex(x=>x.id===id),j=i+delta;if
 </body></html>
