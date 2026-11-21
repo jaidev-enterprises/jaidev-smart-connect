@@ -30,6 +30,7 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
   padding:16px;
   background:#fff;
 }
+
 .publiccard{
   width:100%;
   max-width:100%;
@@ -41,18 +42,52 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
   text-align:center;
   box-shadow:none;
   background:#fff;
-/* Public business links: compact logo tiles; links remain fully clickable. */
-#publicLinks{display:flex;justify-content:center;align-items:stretch;flex-wrap:wrap;gap:12px;margin:20px auto}
-.pbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-decoration:none;color:#172033;background:#fff;border:1px solid #e3eaf3;border-radius:16px;width:104px;min-height:104px;padding:12px 8px;box-shadow:0 3px 12px #1725540a;font-size:12px;font-weight:750;overflow-wrap:anywhere;transition:transform .15s,box-shadow .15s}
-.pbtn svg,.pbtn img{width:48px;height:48px;display:block;flex:0 0 auto;object-fit:contain}.pbtn img{border-radius:9px}.pbtn:active{transform:scale(.96)}.pbtn:focus-visible{outline:3px solid #4285f4;outline-offset:3px}
-.logo{
-display:block;
-width:120px;
-height:120px;
-object-fit:contain;
-border-radius:18px;
-margin:0 auto 18px;
 }
+
+/* Public business links */
+#publicLinks{
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  flex-wrap:wrap;
+  gap:12px;
+  margin:20px auto;
+}
+.pbtn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  text-decoration:none;
+  color:#172033;
+  background:#fff;
+  border:1px solid #e3eaf3;
+  border-radius:16px;
+  width:104px;
+  min-height:104px;
+  padding:12px 8px;
+  font-size:12px;
+  font-weight:750;
+  overflow-wrap:anywhere;
+}
+.pbtn svg,.pbtn img{
+  width:48px;
+  height:48px;
+  display:block;
+  flex:0 0 auto;
+  object-fit:contain;
+}
+.pbtn img{border-radius:9px}
+.logo{
+  display:block;
+  width:120px;
+  height:120px;
+  object-fit:contain;
+  border-radius:18px;
+  margin:0 auto 18px;
+}
+
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#172033;color:white;padding:11px 16px;border-radius:12px;z-index:20;display:none;max-width:90%;text-align:center}
 @media(max-width:650px){.grid,.grid3{grid-template-columns:1fr}.top{align-items:flex-start}main{margin-top:12px}.panel{padding:14px}.public{padding:12px}.pbtn{width:calc(33.333% - 10px);min-width:88px;max-width:112px;min-height:100px}}
 </style>
