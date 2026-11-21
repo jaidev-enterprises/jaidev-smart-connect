@@ -223,6 +223,25 @@ $("downloadQrBtn").onclick=()=>{const img=$("qrcode").querySelector("img"),canva
 $("copyUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("pageUrl").textContent);toast("Page URL copied")}catch{toast("Clipboard unavailable. Copy the page URL manually.")}};
 $("writeNfcBtn").onclick=async()=>{const out=$("nfcMsg");out.classList.remove("hidden");if(!("NDEFReader" in window)){msg(out,"Web NFC is not supported in this browser. Copy the URL and use a compatible NFC writing app.",true);return}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:"url",data:pageUrl(selectedCustomer)}]});msg(out,"NFC tag written successfully. Test it by tapping another phone.");}catch(e){msg(out,"NFC write failed: "+e.message,true)}};
 window.addEventListener("load",init);
+$("addLinkBtn").addEventListener("click", function(e) {
+  if ($("lType").value !== "UPI Payment") return;
+
+  const upi = $("lUrl").value.trim().replace(/\s/g, "");
+
+  if (!/^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+$/.test(upi)) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    toast("Enter a valid UPI ID, e.g. shop@okaxis");
+    return;
+  }
+
+  $("lUrl").value = "upi://pay?" + new URLSearchParams({
+    pa: upi,
+    pn: selectedCustomer.business_name,
+    cu: "INR"
+  }).toString();
+}, true);
+ 
 })();
 </script>
 </body></html>
