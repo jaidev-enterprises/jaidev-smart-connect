@@ -445,7 +445,7 @@ async function moveLink(id,delta){
     .update({position:second.position}).eq("id",first.id);
   if(r.error){toast(r.error.message);return}
   await loadLinks();
-}
+}window.addEventListener("load",init);
 })();
 </script>
 </body>
