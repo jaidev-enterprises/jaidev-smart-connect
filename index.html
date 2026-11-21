@@ -30,7 +30,6 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
   padding:0;
   background:#fff;
 }
-
 .publiccard{
   width:100%;
   max-width:100%;
@@ -43,7 +42,6 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
   box-shadow:none;
   background:#fff;
 }
-
 .logo{
   display:block;
   width:120px;
@@ -52,7 +50,6 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
   border-radius:18px;
   margin:0 auto 18px;
 }
-
 #toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#172033;color:white;padding:11px 16px;border-radius:12px;z-index:20;display:none;max-width:90%;text-align:center}
 @media(max-width:650px){
 .grid,.grid3{grid-template-columns:1fr}
@@ -60,15 +57,13 @@ a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px da
 main{margin-top:12px}
 .panel{padding:14px}
 .public{padding:12px}
-
 #publicLinks{
-display:grid;
+display:grid
 grid-template-columns:repeat(5,minmax(0,1fr));
 gap:8px;
 width:100%;
 margin:18px auto;
 }
-
 .pbtn{
 width:100%;
 min-width:0;
@@ -83,7 +78,6 @@ gap:5px;
 font-size:10px;
 text-align:center;
 }
-
 .pbtn img,.pbtn svg{
 width:23px;
 height:23px;
@@ -91,12 +85,10 @@ max-width:23px;
 max-height:23px;
 object-fit:contain;
 }
-
 .pbtn span{
 font-size:10px;
 line-height:1.2;
 overflow-wrap:anywhere;
-}
 }
 </style>
 </head>
@@ -165,14 +157,17 @@ function pageUrl(c){
  url.searchParams.set("p", c.slug);
  return url.toString();
 }
-function isConfigured(){return SUPABASE_URL.startsWith("https://")&&!SUPABASE_URL.includes("PASTE_")&&SUPABASE_ANON_KEY.length>20&&!SUPABASE_ANON_KEY.includes("PASTE_")}
+function isConfigured(){
+ return typeof SUPABASE_URL==="string" &&
+        SUPABASE_URL.startsWith("https://") &&
+        typeof SUPABASE_ANON_KEY==="string" &&
+        SUPABASE_ANON_KEY.startsWith("sb_publishable_");
+}
 async function init(){
- 
  if(!isConfigured()){
   $("configNotice").classList.remove("hidden");
   return;
  }
-
  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
  $("configNotice").classList.add("hidden");
 
@@ -181,9 +176,7 @@ async function init(){
   await renderPublic(publicSlug);
   return;
  }
-
  $("authSection").classList.remove("hidden");
-
  const {data:{session}}=await sb.auth.getSession();
  if(session) await enterApp(session.user);
 
@@ -196,7 +189,6 @@ async function init(){
    $("logoutBtn").classList.add("hidden");
   }
  });
-}
 async function enterApp(user){
  currentUser=user;const {data:profile,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
  if(error||!profile||!["admin","staff"].includes(profile.role)){await sb.auth.signOut();msg($("authMsg"),"This account has no JAIDEV admin/staff permission. Ask the administrator to assign a role.",true);return}
@@ -263,7 +255,6 @@ async function addLink(){
  }catch(e){toast(e.message);$("logoUploadStatus").textContent=e.message}
  finally{btn.disabled=false}
 }
-
 /* Self-contained inline SVG logos: no external image-host dependency. */
 function logoFor(type){
  const svg=(body)=>`<svg viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
@@ -323,61 +314,46 @@ $("linkCustomer").onchange=loadLinkWorkspace;$("addLinkBtn").onclick=addLink;$("
 $("downloadQrBtn").onclick=()=>{const img=$("qrcode").querySelector("img"),canvas=$("qrcode").querySelector("canvas");const data=img?.src||canvas?.toDataURL("image/png");if(!data){toast("QR not ready");return}const a=document.createElement("a");a.href=data;a.download=(selectedCustomer?.slug||"business")+"-qr.png";a.click()};
 $("copyUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("pageUrl").textContent);toast("Page URL copied")}catch{toast("Clipboard unavailable. Copy the page URL manually.")}};
 $("writeNfcBtn").onclick=async()=>{const out=$("nfcMsg");out.classList.remove("hidden");if(!("NDEFReader" in window)){msg(out,"Web NFC is not supported in this browser. Copy the URL and use a compatible NFC writing app.",true);return}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:"url",data:pageUrl(selectedCustomer)}]});msg(out,"NFC tag written successfully. Test it by tapping another phone.");}catch(e){msg(out,"NFC write failed: "+e.message,true)}};
-
 window.addEventListener("load",init);
-
 $("addLinkBtn").addEventListener("click", function(e) {
   if ($("lType").value !== "UPI Payment") return;
-
   const upi = $("lUrl").value.trim().replace(/\s/g, "");
-
   if (!/^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+$/.test(upi)) {
     e.stopImmediatePropagation();
     e.preventDefault();
     toast("Enter a valid UPI ID, e.g. shop@okaxis");
     return;
   }
-
   $("lUrl").value = "upi://pay?" + new URLSearchParams({
     pa: upi,
     pn: selectedCustomer.business_name,
     cu: "INR"
   }).toString();
 }, true);
-
 async function moveLink(id,delta){
   const {data,error}=await sb.from("business_links")
     .select("*")
     .eq("customer_id",selectedCustomer.id)
     .order("position");
-
   if(error){toast(error.message);return}
-
   const a=data||[];
   const i=a.findIndex(x=>x.id===id);
   const j=i+delta;
-
   if(i<0||j<0||j>=a.length)return;
-
   const first=a[i];
   const second=a[j];
   const temp=Math.max(0,...a.map(x=>Number(x.position)||0))+1000;
-
   let r=await sb.from("business_links")
     .update({position:temp}).eq("id",first.id);
   if(r.error){toast(r.error.message);return}
-
   r=await sb.from("business_links")
     .update({position:first.position}).eq("id",second.id);
   if(r.error){toast(r.error.message);return}
-
   r=await sb.from("business_links")
     .update({position:second.position}).eq("id",first.id);
   if(r.error){toast(r.error.message);return}
-
   await loadLinks();
 }
-
 })();
 </script>
 </body>
