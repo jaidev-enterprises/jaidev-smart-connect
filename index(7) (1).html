@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>JAIDEV SMART CONNECT</title>
+<meta name="theme-color" content="#4285f4">
+<style>
+:root{--blue:#4285f4;--red:#ea4335;--yellow:#fbbc05;--green:#34a853;--ink:#182230;--muted:#64748b;--bg:#f4f7fb;--line:#e5eaf1}
+*{box-sizing:border-box}body{margin:0;font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top{max-width:1100px;margin:auto;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:850;letter-spacing:.2px}.brand span:nth-child(1){color:var(--blue)}.brand span:nth-child(2){color:var(--red)}.brand span:nth-child(3){color:var(--yellow)}.brand span:nth-child(4){color:var(--green)}
+main{max-width:1100px;margin:22px auto;padding:0 16px 50px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #17255408}
+h1,h2,h3{margin:0 0 12px}h1{font-size:24px}h2{font-size:19px}h3{font-size:16px}
+small,.muted{color:var(--muted)}label{display:block;font-size:13px;font-weight:650;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #cfd8e3;border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:75px;resize:vertical}button,.btn{border:0;border-radius:10px;padding:11px 15px;font:700 14px system-ui;cursor:pointer;background:var(--blue);color:white}
+button.secondary{background:#edf2f8;color:#26364a}button.danger{background:#fee2e2;color:#991b1b}button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hidden{display:none!important}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.tabs button{background:#e9eff8;color:#30435c}.tabs button.active{background:var(--blue);color:#fff}
+.stat{padding:14px;border:1px solid var(--line);border-radius:12px;background:#fbfdff}.stat b{font-size:25px;display:block}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}.itemhead{display:flex;justify-content:space-between;gap:10px;align-items:center}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}.notice{padding:12px;border-radius:10px;background:#eff6ff;color:#1e40af;margin:10px 0}.error{background:#fff1f2;color:#9f1239}.success{background:#ecfdf5;color:#166534}
+a{color:var(--blue);overflow-wrap:anywhere}.qrbox{background:white;border:1px dashed #b8c5d6;border-radius:12px;padding:12px;display:inline-block}
+.public{max-width:480px;margin:30px auto;padding:18px}.publiccard{background:white;border:1px solid var(--line);border-radius:22px;padding:24px;text-align:center;box-shadow:0 10px 35px #0f172a12}
+/* Public business links: compact logo tiles; links remain fully clickable. */
+#publicLinks{display:flex;justify-content:center;align-items:stretch;flex-wrap:wrap;gap:12px;margin:20px auto}
+.pbtn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;text-decoration:none;color:#172033;background:#fff;border:1px solid #e3eaf3;border-radius:16px;width:104px;min-height:104px;padding:12px 8px;box-shadow:0 3px 12px #1725540a;font-size:12px;font-weight:750;overflow-wrap:anywhere;transition:transform .15s,box-shadow .15s}
+.pbtn svg,.pbtn img{width:48px;height:48px;display:block;flex:0 0 auto;object-fit:contain}.pbtn img{border-radius:9px}.pbtn:active{transform:scale(.96)}.pbtn:focus-visible{outline:3px solid #4285f4;outline-offset:3px}
+.logo{width:76px;height:76px;object-fit:cover;border-radius:18px;margin:0 auto 12px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#172033;color:white;padding:11px 16px;border-radius:12px;z-index:20;display:none;max-width:90%;text-align:center}
+@media(max-width:650px){.grid,.grid3{grid-template-columns:1fr}.top{align-items:flex-start}main{margin-top:12px}.panel{padding:14px}.public{padding:12px}.pbtn{width:calc(33.333% - 10px);min-width:88px;max-width:112px;min-height:100px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div class="brand"><span>JAIDEV</span> <span>SMART</span> <span>CONNECT</span><div class="muted" style="font-size:11px;font-weight:500">JAIDEV ENTERPRISES</div></div><div class="row"><span id="userLabel" class="muted"></span><button id="logoutBtn" class="secondary hidden">Logout</button></div></div></header>
+<main>
+<section id="configNotice" class="panel">
+<h1>Connect your Supabase project</h1>
+<p class="muted">This application is ready to connect. Add your Supabase Project URL and anon/public key in the configuration section of this file. Never paste a service-role key here.</p>
+<div class="notice">Setup steps and the database SQL are included in the downloaded package's README and schema.sql.</div>
+</section>
+<section id="authSection" class="panel hidden">
+<h1>JAIDEV staff login</h1><p class="muted">Sign in using an account created by the JAIDEV administrator.</p>
+<div class="grid"><div><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="staff@example.com"></div><div><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password"></div></div>
+<div class="row" style="margin-top:14px"><button id="loginBtn">Sign in</button><button id="resetBtn" class="secondary">Reset password email</button></div>
+<div id="authMsg" class="notice hidden"></div>
+</section>
+<section id="appSection" class="hidden">
+<div class="panel">
+<div class="row" style="justify-content:space-between"><div><h1>Master control panel</h1><div class="muted">Customer accounts, multi-link pages, NFC and analytics</div></div><span id="rolePill" class="notice">Staff</span></div>
+<div class="grid3" style="margin-top:14px">
+<div class="stat"><small>Total businesses</small><b id="statCustomers">0</b></div><div class="stat"><small>Active businesses</small><b id="statActive">0</b></div><div class="stat"><small>Tracked interactions</small><b id="statEvents">0</b></div>
+</div>
+<div class="tabs"><button class="active" data-tab="customersTab">Customers</button><button data-tab="linksTab">Links & QR</button><button data-tab="analyticsTab">Analytics</button><button data-tab="staffTab" id="staffTabButton">Staff</button></div>
+</div>
+<section id="customersTab" class="panel tabpane">
+<div class="row" style="justify-content:space-between"><h2>Business customers</h2><button id="newCustomerBtn">+ Add customer</button></div><div id="customerList"></div>
+<div id="customerForm" class="item hidden"><h3 id="customerFormTitle">Add business</h3><input id="customerId" type="hidden">
+<div class="grid"><div><label>Business name *</label><input id="cName" placeholder="Example: ABC Dental Care"></div><div><label>Unique page slug *</label><input id="cSlug" placeholder="abc-dental-care"></div><div><label>Phone</label><input id="cPhone" placeholder="+91..."></div><div><label>Business category</label><input id="cCategory" placeholder="Clinic / Restaurant / Salon"></div><div><label>Logo image URL</label><input id="cLogo" placeholder="https://..."></div><div><label>Page background colour</label><input id="cColor" type="color" value="#ffffff"></div></div>
+<label>Short welcome message</label><input id="cWelcome" placeholder="Welcome! Connect with us"><label>Business status</label><select id="cActive"><option value="true">Active</option><option value="false">Suspended</option></select>
+<div class="row" style="margin-top:12px"><button id="saveCustomerBtn">Save customer</button><button id="cancelCustomerBtn" class="secondary">Cancel</button></div></div>
+</section>
+<section id="linksTab" class="panel tabpane hidden"><h2>Links, artistic QR and NFC</h2><label>Select business</label><select id="linkCustomer"></select><div id="linkWorkspace" class="hidden"><div class="grid"><div>
+<h3>Add a button / link</h3><label>Button label</label><input id="lLabel" placeholder="Example: Swiggy, Practo, Book Appointment"><label>Destination URL</label><input id="lUrl" placeholder="https://... or supported UPI / tel link"><label>Service / logo type</label><select id="lType"><option>Google Reviews</option><option>Instagram</option><option>Facebook</option><option>WhatsApp</option><option>UPI Payment</option><option>Website</option><option>Maps</option><option>Call</option><option>Menu / Catalogue</option><option>Swiggy</option><option>Zomato</option><option>magicpin</option><option>ONDC</option><option>EatSure</option><option>DotPe</option><option>Practo</option><option>Apollo 24|7</option><option>Tata 1mg</option><option>PharmEasy</option><option>Netmeds</option><option>HexaHealth</option><option>Amazon</option><option>Flipkart</option><option>Meesho</option><option>Myntra</option><option>AJIO</option><option>IndiaMART</option><option>YouTube</option><option>LinkedIn</option><option>Telegram</option><option>Appointment</option><option>Booking</option><option>Other / Custom</option></select><label>Upload official / custom logo (optional)</label><input id="lLogoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><small>PNG, JPG, WEBP or SVG · max 2 MB. Uploaded logo overrides the built-in icon.</small><div id="logoUploadStatus" class="muted" style="margin-top:6px"></div>
+<div class="row" style="margin-top:12px"><button id="addLinkBtn">Add link</button></div><div class="notice">Custom logos are stored in your Supabase Storage bucket named service-logos. Run the supplied setup SQL once before uploading logos.</div><div id="linkList"></div></div><div>
+<h3>Business QR code</h3><p class="muted">Both QR and NFC point to this permanent page URL.</p><div class="qrbox"><div id="qrcode"></div></div><div id="pageUrl" class="muted" style="margin:8px 0;overflow-wrap:anywhere"></div>
+<div class="row"><button id="downloadQrBtn" class="secondary">Download QR PNG</button><button id="copyUrlBtn" class="secondary">Copy page URL</button></div><hr><h3>NFC programming</h3><p class="muted">On supported Android Chrome devices over HTTPS, tap Write NFC and hold an NTAG213 tag near the phone.</p><button id="writeNfcBtn">Write URL to NFC tag</button><div id="nfcMsg" class="notice hidden"></div><div class="notice">If Web NFC is unavailable, copy the URL and write it using a compatible NFC app. NFC writing requires HTTPS and device/browser support.</div>
+</div></div></div></section>
+<section id="analyticsTab" class="panel tabpane hidden"><h2>Analytics</h2><label>Business</label><select id="analyticsCustomer"></select><div class="grid3"><div class="stat"><small>Page visits</small><b id="aViews">0</b></div><div class="stat"><small>Button clicks</small><b id="aClicks">0</b></div><div class="stat"><small>Unique sessions (approx.)</small><b id="aSessions">0</b></div></div><h3 style="margin-top:18px">Button performance</h3><div id="analyticsRows"></div><p class="muted">Counts are based on tracked page visits and outbound button clicks. They do not prove that a Google review or UPI payment was completed.</p></section>
+<section id="staffTab" class="panel tabpane hidden"><h2>Staff accounts</h2><p class="muted">Create staff users in Supabase Authentication first, then assign the staff role using the SQL instructions in README. Only admins can change roles.</p><div id="staffInfo" class="notice">Staff account management is controlled through Supabase Auth and the profiles table.</div></section>
+</section></main>
+<section id="publicPage" class="public hidden"><div class="publiccard" id="publicCard"></div></section><div id="toast"></div>
+<script>
+const SUPABASE_URL = "https://liwbcukxfblilhpptmfv.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_JOvd70TRkO2Dhp6WrEc9PA_MI27faFh";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const publicSlug = params.get("p");
+let sb=null, currentUser=null, currentProfile=null, customers=[], selectedCustomer=null, qr=null;
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2800)}
+function msg(el,text,error=false){el.textContent=text;el.classList.remove("hidden","error","success");el.classList.add(error?"error":"success")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+// Canonical GitHub Pages address for JAIDEV SMART CONNECT.
+// Customer URLs must never be generated from a local content:// Downloads address.
+const PUBLIC_SITE_URL = "https://jaidev-enterprises.github.io/jaidev-smart-connect/";
+function pageUrl(c){
+ const url = new URL(PUBLIC_SITE_URL);
+ url.searchParams.set("p", c.slug);
+ return url.toString();
+}
+function isConfigured(){return SUPABASE_URL.startsWith("https://")&&!SUPABASE_URL.includes("PASTE_")&&SUPABASE_ANON_KEY.length>20&&!SUPABASE_ANON_KEY.includes("PASTE_")}
+async function init(){
+ if(publicSlug){$("configNotice").classList.add("hidden");await renderPublic(publicSlug);return}
+ if(!isConfigured()){$("configNotice").classList.remove("hidden");return}
+ $("configNotice").classList.add("hidden");sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ $("authSection").classList.remove("hidden");
+ const {data:{session}}=await sb.auth.getSession(); if(session) await enterApp(session.user);
+ sb.auth.onAuthStateChange((_event,session)=>{if(session&&!currentUser)enterApp(session.user);else if(!session){currentUser=null;$("appSection").classList.add("hidden");$("authSection").classList.remove("hidden");$("logoutBtn").classList.add("hidden")}});
+}
+async function enterApp(user){
+ currentUser=user;const {data:profile,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
+ if(error||!profile||!["admin","staff"].includes(profile.role)){await sb.auth.signOut();msg($("authMsg"),"This account has no JAIDEV admin/staff permission. Ask the administrator to assign a role.",true);return}
+ currentProfile=profile;$("authSection").classList.add("hidden");$("appSection").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("userLabel").textContent=user.email;$("rolePill").textContent=profile.role.toUpperCase();
+ $("staffTabButton").classList.toggle("hidden",profile.role!=="admin");await loadCustomers();
+}
+async function loadCustomers(){
+ const {data,error}=await sb.from("customers").select("*").order("created_at",{ascending:false});
+ if(error){toast(error.message);return}customers=data||[];$("statCustomers").textContent=customers.length;$("statActive").textContent=customers.filter(c=>c.active).length;renderCustomerList();fillSelects();
+}
+function renderCustomerList(){
+ $("customerList").innerHTML=customers.map(c=>`<div class="item"><div class="itemhead"><div><b>${esc(c.business_name)}</b><div class="muted">${esc(c.slug)} · ${c.active?"Active":"Suspended"}</div></div><div class="row"><button class="secondary" data-edit="${c.id}">Edit</button><button class="secondary" data-open="${c.id}">Links / QR</button></div></div><div class="muted" style="margin-top:8px">${esc(c.phone||"")}</div><a href="${esc(pageUrl(c))}" target="_blank" rel="noopener">Open public page</a></div>`).join("")||'<p class="muted">No customers added yet.</p>';
+ $("customerList").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editCustomer(b.dataset.edit));$("customerList").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{$("linkCustomer").value=b.dataset.open;loadLinkWorkspace();switchTab("linksTab")});
+}
+function fillSelects(){for(const id of ["linkCustomer","analyticsCustomer"]){const el=$(id),old=el.value;el.innerHTML='<option value="">Choose a business</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.business_name)}</option>`).join("");if(customers.some(c=>c.id===old))el.value=old}}
+function showCustomerForm(c=null){
+ $("customerForm").classList.remove("hidden");$("customerFormTitle").textContent=c?"Edit business":"Add business";$("customerId").value=c?.id||"";$("cName").value=c?.business_name||"";$("cSlug").value=c?.slug||"";$("cPhone").value=c?.phone||"";$("cCategory").value=c?.category||"";$("cLogo").value=c?.logo_url||"";$("cColor").value=c?.background_color||"#ffffff";$("cWelcome").value=c?.welcome_text||"Welcome! Connect with us";$("cActive").value=String(c?.active??true);
+}
+function editCustomer(id){const c=customers.find(x=>x.id===id);if(c)showCustomerForm(c)}
+async function saveCustomer(){
+ const id=$("customerId").value,name=$("cName").value.trim(),slug=slugify($("cSlug").value||name);if(!name||!slug){toast("Business name and slug are required");return}
+ const payload={business_name:name,slug,phone:$("cPhone").value.trim(),category:$("cCategory").value.trim(),logo_url:$("cLogo").value.trim()||null,background_color:$("cColor").value,welcome_text:$("cWelcome").value.trim(),active:$("cActive").value==="true"};
+ const res=id?await sb.from("customers").update(payload).eq("id",id):await sb.from("customers").insert(payload);if(res.error){toast(res.error.message);return}$("customerForm").classList.add("hidden");toast("Customer saved");await loadCustomers()
+}
+function switchTab(id){document.querySelectorAll(".tabpane").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id))}
+async function loadLinkWorkspace(){
+ const id=$("linkCustomer").value;selectedCustomer=customers.find(c=>c.id===id);$("linkWorkspace").classList.toggle("hidden",!selectedCustomer);if(!selectedCustomer)return;
+ $("pageUrl").textContent=pageUrl(selectedCustomer);$("qrcode").innerHTML="";qr=new QRCode($("qrcode"),{text:pageUrl(selectedCustomer),width:220,height:220,colorDark:"#111827",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});await loadLinks();
+}
+async function loadLinks(){
+ const {data,error}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");if(error){toast(error.message);return}
+ $("linkList").innerHTML="<h3 style='margin-top:18px'>Existing links</h3>"+(data||[]).map(l=>`<div class="item"><div class="itemhead"><div><b>${esc(l.label)}</b><div class="muted">${esc(l.link_type)}</div></div><div class="row"><button class="secondary" data-up="${l.id}">↑</button><button class="secondary" data-down="${l.id}">↓</button><button class="danger" data-del="${l.id}">Delete</button></div></div><div class="muted">${esc(l.url)}</div>${l.icon_url?`<img src="${esc(l.icon_url)}" alt="Custom logo" style="width:42px;height:42px;object-fit:contain;margin-top:8px">`:""}</div>`).join("")||'<p class="muted">No links yet.</p>';
+ $("linkList").querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this link?")){const r=await sb.from("business_links").delete().eq("id",b.dataset.del);if(r.error)toast(r.error.message);else loadLinks()}});
+ $("linkList").querySelectorAll("[data-up],[data-down]").forEach(b=>b.onclick=()=>moveLink(b.dataset.up||b.dataset.down,b.hasAttribute("data-up")?-1:1));
+}
+async function moveLink(id,delta){
+ const {data}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");const a=data||[],i=a.findIndex(x=>x.id===id),j=i+delta;if(i<0||j<0||j>=a.length)return;
+ const p1=a[i].position,p2=a[j].position;await sb.from("business_links").update({position:p2}).eq("id",a[i].id);await sb.from("business_links").update({position:p1}).eq("id",a[j].id);loadLinks()
+}
+async function uploadServiceLogo(file){
+ if(!file)return null;
+ if(file.size>2*1024*1024)throw new Error("Logo must be 2 MB or smaller");
+ const allowed=["image/png","image/jpeg","image/webp","image/svg+xml"];
+ if(!allowed.includes(file.type))throw new Error("Use PNG, JPG, WEBP or SVG logo");
+ const ext=({"image/png":"png","image/jpeg":"jpg","image/webp":"webp","image/svg+xml":"svg"})[file.type];
+ const path=`${selectedCustomer.id}/${crypto.randomUUID?crypto.randomUUID():Date.now()}.${ext}`;
+ const {error}=await sb.storage.from("service-logos").upload(path,file,{contentType:file.type,upsert:false});
+ if(error)throw new Error("Logo upload failed: "+error.message);
+ return sb.storage.from("service-logos").getPublicUrl(path).data.publicUrl;
+}
+async function addLink(){
+ const label=$("lLabel").value.trim(),url=$("lUrl").value.trim(),type=$("lType").value,file=$("lLogoFile").files[0];
+ if(!label||!url){toast("Enter a label and URL");return}
+ let parsed;try{parsed=new URL(url)}catch{toast("Enter a valid full URL, including https://");return}
+ if(!["http:","https:","upi:","tel:","mailto:"].includes(parsed.protocol)){toast("Unsupported URL protocol");return}
+ const btn=$("addLinkBtn");btn.disabled=true;$("logoUploadStatus").textContent=file?"Uploading logo…":"Saving link…";
+ try{
+  const icon_url=await uploadServiceLogo(file);
+  const {count}=await sb.from("business_links").select("*",{count:"exact",head:true}).eq("customer_id",selectedCustomer.id);
+  const r=await sb.from("business_links").insert({customer_id:selectedCustomer.id,label,url,link_type:type,icon_url,position:count||0});
+  if(r.error)throw new Error(r.error.message);
+  $("lLabel").value="";$("lUrl").value="";$("lLogoFile").value="";$("logoUploadStatus").textContent="";
+  await loadLinks();toast("Link added successfully");
+ }catch(e){toast(e.message);$("logoUploadStatus").textContent=e.message}
+ finally{btn.disabled=false}
+}
+
+/* Self-contained inline SVG logos: no external image-host dependency. */
+function logoFor(type){
+ const svg=(body)=>`<svg viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+ const logos={
+ "Google Reviews":svg(`<path fill="#4285F4" d="M56 33c0-2-.2-4-.6-6H32v11h13.5a12 12 0 0 1-5 7.8v6.4h8.1C53.3 47.7 56 41 56 33Z"/><path fill="#34A853" d="M32 57c6.5 0 12-2.1 16-5.8l-8.1-6.4c-2.2 1.5-4.8 2.4-7.9 2.4-6.1 0-11.3-4.1-13.2-9.6h-8.4v6.6A24 24 0 0 0 32 57Z"/><path fill="#FBBC05" d="M18.8 37.6a14.5 14.5 0 0 1 0-11.2v-6.6h-8.4a25 25 0 0 0 0 24.4l8.4-6.6Z"/><path fill="#EA4335" d="M32 15.8c3.5 0 6.7 1.2 9.2 3.6l6.9-6.9C43.9 8.4 38.4 6 32 6a24 24 0 0 0-21.6 13.8l8.4 6.6c1.9-5.5 7.1-10.6 13.2-10.6Z"/>`),
+ "Instagram":svg(`<defs><linearGradient id="igGrad" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#FFB000"/><stop offset=".45" stop-color="#F00075"/><stop offset="1" stop-color="#7B35C8"/></linearGradient></defs><rect x="7" y="7" width="50" height="50" rx="15" fill="url(#igGrad)"/><rect x="17" y="17" width="30" height="30" rx="9" fill="none" stroke="white" stroke-width="4"/><circle cx="32" cy="32" r="7" fill="none" stroke="white" stroke-width="4"/><circle cx="43" cy="21" r="2.8" fill="white"/>`),
+ "Facebook":svg(`<circle cx="32" cy="32" r="27" fill="#1877F2"/><path fill="white" d="M36 55V35h7l1-8h-8v-5c0-2.3.7-3.8 4-3.8h4.3v-7.2c-.8-.1-3.5-.3-6.7-.3-6.7 0-11.3 4.1-11.3 11.6V27h-7v8h7v20Z"/>`),
+ "WhatsApp":svg(`<circle cx="32" cy="30" r="25" fill="#25D366"/><path fill="white" d="M19 46l2-8a18 18 0 1 1 7 7l-9 1Z"/><path fill="#25D366" d="M26 21c-.8-1.7-1.5-1.7-2.2-1.7h-1.9c-.7 0-1.8.3-2.7 1.3s-3.5 3.4-3.5 8.3 3.6 9.6 4.1 10.3 6.9 11 17 14c8.4 2.5 10.1 2 11.9 1.8s5.8-2.4 6.6-4.7.8-4.2.5-4.7-1-.8-2.1-1.3-5.8-2.9-6.7-3.2-1.6-.5-2.3.5-2.6 3.2-3.2 3.9-1.2.8-2.3.3a27 27 0 0 1-7.9-4.9 29 29 0 0 1-5.4-6.7c-.6-1.1-.1-1.7.4-2.2.5-.5 1.1-1.3 1.6-1.9.5-.6.7-1.1 1.1-1.8.3-.7.2-1.3 0-1.8L26 21Z"/>`),
+ "UPI Payment":svg(`<rect x="4" y="13" width="56" height="38" rx="8" fill="#fff" stroke="#1B3C80" stroke-width="2"/><path fill="#0974C8" d="M18 20h7l-7 24h-7Z"/><path fill="#F58220" d="M29 20h7l-7 24h-7Z"/><path fill="#249B54" d="M40 20h7l-7 24h-7Z"/><text x="49" y="35" font-size="9" font-weight="bold" fill="#1B3C80" text-anchor="middle">UPI</text>`),
+ "Maps":svg(`<path fill="#34A853" d="M32 59S10 36 10 25a22 22 0 1 1 44 0C54 36 32 59 32 59Z"/><path fill="#4285F4" d="M32 5a20 20 0 0 0-20 20h20Z"/><path fill="#FBBC04" d="M32 5a20 20 0 0 1 20 20H32Z"/><path fill="#EA4335" d="M12 25a20 20 0 0 0 20 20V25Z"/><circle cx="32" cy="25" r="8" fill="white"/>`),
+ "Website":svg(`<circle cx="32" cy="32" r="25" fill="#4285F4"/><path d="M7 32h50M32 7c8 8 8 42 0 50M32 7c-8 8-8 42 0 50M13 18h38M13 46h38" stroke="white" stroke-width="3" fill="none"/>`),
+ "Call":svg(`<circle cx="32" cy="32" r="27" fill="#16A34A"/><path fill="white" d="M20 12c-3 0-7 5-7 9 0 14 17 31 31 31 4 0 9-4 9-7l-2-6-10-5-5 6c-5-2-10-7-12-12l6-5-5-10-5-1Z"/>`),
+ "Menu / Catalogue":svg(`<rect x="12" y="7" width="40" height="50" rx="5" fill="#4285F4"/><path d="M21 20h22M21 29h22M21 38h22M21 47h15" stroke="white" stroke-width="4" stroke-linecap="round"/>`),
+ "Other":svg(`<circle cx="32" cy="32" r="27" fill="#64748B"/><path d="M32 19v26M19 32h26" stroke="white" stroke-width="6" stroke-linecap="round"/>`)
+ };
+ return logos[type]||logos["Website"];
+}
+async function renderPublic(slug){
+ $("publicPage").classList.remove("hidden");$("configNotice").classList.add("hidden");
+ if(!isConfigured()){$("publicCard").innerHTML="<h2>Page setup required</h2><p>Site owner must configure the Supabase connection.</p>";return}
+ sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+ const {data:c,error}=await sb.from("customers").select("*").eq("slug",slug).eq("active",true).single();
+ if(error||!c){$("publicCard").innerHTML="<h2>Page unavailable</h2><p>This business page may be inactive or the address is incorrect.</p>";return}
+ const {data:links,error:linksError}=await sb.from("business_links").select("*").eq("customer_id",c.id).eq("active",true).order("position");
+ if(linksError){$("publicCard").innerHTML="<h2>Unable to load links</h2><p>Please try again later.</p>";return}
+ const sessionKey="jsc_"+slug;let sid=sessionStorage.getItem(sessionKey);if(!sid){sid=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();sessionStorage.setItem(sessionKey,sid)}
+ const logoSafe = c.logo_url && /^https?:\/\//i.test(c.logo_url) ? esc(c.logo_url) : "";
+ $("publicCard").style.background=c.background_color||"#fff";
+ $("publicCard").innerHTML=`${logoSafe?`<img class="logo" src="${logoSafe}" alt="Business logo">`:""}<h1>${esc(c.business_name)}</h1><p class="muted">${esc(c.welcome_text||"Connect with us")}</p><div id="publicLinks"></div><small>Powered by JAIDEV ENTERPRISES</small>`;
+ $("publicLinks").innerHTML=(links||[]).map(l=>`<a class="pbtn" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer" data-link="${esc(l.id)}" title="${esc(l.label)}" aria-label="${esc(l.label)}">${l.icon_url && /^https?:\/\//i.test(l.icon_url) ? `<img src="${esc(l.icon_url)}" alt="">` : logoFor(l.link_type)}<span>${esc(l.label)}</span></a>`).join("")||"<p>No links have been added yet.</p>";
+ // Log page visits and button clicks without blocking page display.
+ sb.from("scan_events").insert({customer_id:c.id,event_type:"page_view",session_id:sid}).then(({error})=>{if(error)console.warn("Page view tracking:",error.message)});
+ $("publicLinks").querySelectorAll("[data-link]").forEach(a=>a.addEventListener("click",()=>{sb.from("scan_events").insert({customer_id:c.id,event_type:"button_click",link_id:a.dataset.link,session_id:sid}).then(({error})=>{if(error)console.warn("Click tracking:",error.message)})}));
+}
+async function loadAnalytics(){
+ const id=$("analyticsCustomer").value;if(!id)return;
+ const {data,error}=await sb.from("scan_events").select("event_type,link_id,session_id,created_at").eq("customer_id",id);
+ if(error){toast(error.message);return}const rows=data||[],views=rows.filter(x=>x.event_type==="page_view"),clicks=rows.filter(x=>x.event_type==="button_click");
+ $("aViews").textContent=views.length;$("aClicks").textContent=clicks.length;$("aSessions").textContent=new Set(views.map(x=>x.session_id).filter(Boolean)).size;
+ const {data:links}=await sb.from("business_links").select("id,label").eq("customer_id",id);
+ $("analyticsRows").innerHTML=(links||[]).map(l=>`<div class="item"><b>${esc(l.label)}</b><span style="float:right">${clicks.filter(x=>x.link_id===l.id).length} clicks</span></div>`).join("")||'<p class="muted">No links or activity yet.</p>';$("statEvents").textContent=rows.length;
+}
+$("loginBtn").onclick=async()=>{const {error}=await sb.auth.signInWithPassword({email:$("email").value,password:$("password").value});if(error)msg($("authMsg"),error.message,true)};
+$("resetBtn").onclick=async()=>{const {error}=await sb.auth.resetPasswordForEmail($("email").value,{redirectTo:location.origin+location.pathname});msg($("authMsg"),error?"Could not send reset email: "+error.message:"If the email is registered, a password reset link has been sent.",!!error)};
+$("logoutBtn").onclick=async()=>sb.auth.signOut();
+$("newCustomerBtn").onclick=()=>showCustomerForm();$("cancelCustomerBtn").onclick=()=>$("customerForm").classList.add("hidden");$("saveCustomerBtn").onclick=saveCustomer;
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+$("linkCustomer").onchange=loadLinkWorkspace;$("addLinkBtn").onclick=addLink;$("analyticsCustomer").onchange=loadAnalytics;
+$("downloadQrBtn").onclick=()=>{const img=$("qrcode").querySelector("img"),canvas=$("qrcode").querySelector("canvas");const data=img?.src||canvas?.toDataURL("image/png");if(!data){toast("QR not ready");return}const a=document.createElement("a");a.href=data;a.download=(selectedCustomer?.slug||"business")+"-qr.png";a.click()};
+$("copyUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("pageUrl").textContent);toast("Page URL copied")}catch{toast("Clipboard unavailable. Copy the page URL manually.")}};
+$("writeNfcBtn").onclick=async()=>{const out=$("nfcMsg");out.classList.remove("hidden");if(!("NDEFReader" in window)){msg(out,"Web NFC is not supported in this browser. Copy the URL and use a compatible NFC writing app.",true);return}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:"url",data:pageUrl(selectedCustomer)}]});msg(out,"NFC tag written successfully. Test it by tapping another phone.");}catch(e){msg(out,"NFC write failed: "+e.message,true)}};
+window.addEventListener("load",init);
+})();
+</script>
+</body></html>
