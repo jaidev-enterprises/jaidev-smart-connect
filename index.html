@@ -254,7 +254,9 @@ $("linkCustomer").onchange=loadLinkWorkspace;$("addLinkBtn").onclick=addLink;$("
 $("downloadQrBtn").onclick=()=>{const img=$("qrcode").querySelector("img"),canvas=$("qrcode").querySelector("canvas");const data=img?.src||canvas?.toDataURL("image/png");if(!data){toast("QR not ready");return}const a=document.createElement("a");a.href=data;a.download=(selectedCustomer?.slug||"business")+"-qr.png";a.click()};
 $("copyUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("pageUrl").textContent);toast("Page URL copied")}catch{toast("Clipboard unavailable. Copy the page URL manually.")}};
 $("writeNfcBtn").onclick=async()=>{const out=$("nfcMsg");out.classList.remove("hidden");if(!("NDEFReader" in window)){msg(out,"Web NFC is not supported in this browser. Copy the URL and use a compatible NFC writing app.",true);return}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:"url",data:pageUrl(selectedCustomer)}]});msg(out,"NFC tag written successfully. Test it by tapping another phone.");}catch(e){msg(out,"NFC write failed: "+e.message,true)}};
+
 window.addEventListener("load",init);
+
 $("addLinkBtn").addEventListener("click", function(e) {
   if ($("lType").value !== "UPI Payment") return;
 
@@ -273,40 +275,8 @@ $("addLinkBtn").addEventListener("click", function(e) {
     cu: "INR"
   }).toString();
 }, true);
- 
+
 async function moveLink(id,delta){
-  const {data,error}=await sb
-    .from("business_links")
-    .select("*")
-    .eq("customer_id",selectedCustomer.id)
-    .order("position");
-
-  if(error){toast(error.message);return}
-
-  const a=data||[];
-  const i=a.findIndex(x=>x.id===id);
-  const j=i+delta;
-
-  if(i<0||j<0||j>=a.length)return;
-
-  const first=a[i];
-  const second=a[j];
-  const temp=Math.max(0,...a.map(x=>Number(x.position)||0))+1000;
-
-  let r=await sb.from("business_links")
-    .update({position:temp}).eq("id",first.id);
-  if(r.error){toast(r.error.message);return}
-
-  r=await sb.from("business_links")
-    .update({position:first.position}).eq("id",second.id);
-  if(r.error){toast(r.error.message);return}
-
-  r=await sb.from("business_links")
-    .update({position:second.position}).eq("id",first.id);
-  if(r.error){toast(r.error.message);return}
-
-  await loadLinks();
-  })();async function moveLink(id,delta){
   const {data,error}=await sb.from("business_links")
     .select("*")
     .eq("customer_id",selectedCustomer.id)
@@ -337,7 +307,9 @@ async function moveLink(id,delta){
   if(r.error){toast(r.error.message);return}
 
   await loadLinks();
-  }
-</script>async function moveLink(id,delta){
- const {data}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");const a=data||[],i=a.findIndex(x=>x.id===id),j=i+delta;if
-</body></html>
+}
+
+})();
+</script>
+</body>
+</html>
