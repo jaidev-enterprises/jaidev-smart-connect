@@ -180,7 +180,7 @@ async function init(){
  const {data:{session}}=await sb.auth.getSession();
  if(session) await enterApp(session.user);
 
- sb.auth.onAuthStateChange((_event,session)=>{
+  sb.auth.onAuthStateChange((_event,session)=>{
   if(session&&!currentUser) enterApp(session.user);
   else if(!session){
    currentUser=null;
@@ -189,6 +189,8 @@ async function init(){
    $("logoutBtn").classList.add("hidden");
   }
  });
+}
+
 async function enterApp(user){
  currentUser=user;const {data:profile,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
  if(error||!profile||!["admin","staff"].includes(profile.role)){await sb.auth.signOut();msg($("authMsg"),"This account has no JAIDEV admin/staff permission. Ask the administrator to assign a role.",true);return}
