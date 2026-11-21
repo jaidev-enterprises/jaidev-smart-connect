@@ -212,11 +212,99 @@ function showCustomerForm(c=null){
  $("customerForm").classList.remove("hidden");$("customerFormTitle").textContent=c?"Edit business":"Add business";$("customerId").value=c?.id||"";$("cName").value=c?.business_name||"";$("cSlug").value=c?.slug||"";$("cPhone").value=c?.phone||"";$("cCategory").value=c?.category||"";$("cLogo").value=c?.logo_url||"";$("cColor").value=c?.background_color||"#ffffff";$("cWelcome").value=c?.welcome_text||"Welcome! Connect with us";$("cActive").value=String(c?.active??true);
 }
 function editCustomer(id){const c=customers.find(x=>x.id===id);if(c)showCustomerForm(c)}
+async function saveCustomer()
 async function saveCustomer(){
- const id=$("customerId").value,name=$("cName").value.trim(),slug=slugify($("cSlug").value||name);if(!name||!slug){toast("Business name and slug are required");return}
- const payload={business_name:name,slug,phone:$("cPhone").value.trim(),category:$("cCategory").value.trim(),logo_url:$("cLogo").value.trim()||null,background_color:$("cColor").value,welcome_text:$("cWelcome").value.trim(),active:$("cActive").value==="true"};
- const res=id?await sb.from("customers").update(payload).eq("id",id):await sb.from("customers").insert(payload);if(res.error){toast(res.error.message);return}$("customerForm").classList.add("hidden");toast("Customer saved");await loadCustomers()
+ try {
+  const id=$("customerId").value;
+  const name=$("cName").value.trim();
+  const slug=slugify($("cSlug").value||name);
+  const file=$("cLogoFile").files[0];
+
+  if(!name||!slug){
+   toast("Business name and slug are required");
+   return;
+  }
+
+  if(file && file.size>2*1024*1024){
+   toast("Logo must be 2 MB or smaller");
+   return;
+  }
+
+  const payload={
+   business_name:name,
+   slug,
+   phone:$("cPhone").value.trim(),
+   category:$("cCategory").value.trim(),
+   logo_url:$("cLogo").value.trim()||null,
+   background_color:$("cColor").value,
+   welcome_text:$("cWelcome").value.trim(),
+   active:$("cActive").value==="true"
+  };
+
+  let customerId=id;
+  let res;
+
+  if(id){
+   res=await sb.from("customers")
+    .update(payload).eq("id",id).select("id").single();
+  }else{
+   res=await sb.from("customers")
+    .insert(payload).select("id").single();
+  }
+
+  if(res.error){
+   toast(res.error.message);
+   return;
+  }
+
+  customerId=res.data.id;
+  $("customerId").value=customerId;
+
+  if(file){
+   const allowed=["image/png","image/jpeg","image/webp"];
+
+   if(!allowed.includes(file.type)){
+    toast("Use PNG, JPG or WEBP image");
+    return;
+   }
+
+   const ext=file.type==="image/png"?"png":
+    file.type==="image/webp"?"webp":"jpg";
+
+   const path=customerId+"/business-logo-"+Date.now()+"."+ext;
+
+   const upload=await sb.storage.from("service-logos")
+    .upload(path,file,{contentType:file.type,upsert:true});
+
+   if(upload.error){
+    toast("Image upload failed: "+upload.error.message);
+    return;
+   }
+
+   const imageUrl=sb.storage.from("service-logos")
+    .getPublicUrl(path).data.publicUrl;
+
+   const update=await sb.from("customers")
+    .update({logo_url:imageUrl}).eq("id",customerId);
+
+   if(update.error){
+    toast("Image URL save failed: "+update.error.message);
+    return;
+   }
+
+   $("cLogo").value=imageUrl;
+  }
+
+  $("customerForm").classList.add("hidden");
+  $("cLogoFile").value="";
+  toast("Customer and logo saved successfully");
+  await loadCustomers();
+
+ }catch(error){
+  toast("Save failed: "+error.message);
+ }
 }
+
 function switchTab(id){document.querySelectorAll(".tabpane").forEach(x=>x.classList.add("hidden"));$(id).classList.remove("hidden");document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id))}
 async function loadLinkWorkspace(){
  const id=$("linkCustomer").value;selectedCustomer=customers.find(c=>c.id===id);$("linkWorkspace").classList.toggle("hidden",!selectedCustomer);if(!selectedCustomer)return;
