@@ -212,7 +212,6 @@ function showCustomerForm(c=null){
  $("customerForm").classList.remove("hidden");$("customerFormTitle").textContent=c?"Edit business":"Add business";$("customerId").value=c?.id||"";$("cName").value=c?.business_name||"";$("cSlug").value=c?.slug||"";$("cPhone").value=c?.phone||"";$("cCategory").value=c?.category||"";$("cLogo").value=c?.logo_url||"";$("cColor").value=c?.background_color||"#ffffff";$("cWelcome").value=c?.welcome_text||"Welcome! Connect with us";$("cActive").value=String(c?.active??true);
 }
 function editCustomer(id){const c=customers.find(x=>x.id===id);if(c)showCustomerForm(c)}
-async function saveCustomer()
 async function saveCustomer(){
  try {
   const id=$("customerId").value;
