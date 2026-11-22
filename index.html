@@ -463,7 +463,7 @@ async function renderPublic(slug){
  const sessionKey="jsc_"+slug;let sid=sessionStorage.getItem(sessionKey);if(!sid){sid=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();sessionStorage.setItem(sessionKey,sid)}
  const logoSafe = c.logo_url && /^https?:\/\//i.test(c.logo_url) ? esc(c.logo_url) : "";
  $("publicCard").style.background=c.background_color||"#fff";
- $("publicCard").innerHTML=`${logoSafe?`<img class="logo" src="${logoSafe}" alt="Business logo">`:""}<h1>${esc(c.business_name)}</h1><p class="muted">${esc(c.welcome_text||"Connect with us")}</p><div id="publicLinks"></div>`;
+ $("publicCard").innerHTML=`${logoSafe?`<img class="logo" src="${logoSafe}" alt="Business logo">`:""}<h1>${esc(c.business_name)}</h1><p class="muted">${esc(c.welcome_text||"Connect with us")}</p><div id="publicLinks"></div><footer class="powered-footer"><span>Powered by</span><strong>JAIDEV EDUCATIONAL TRUST</strong><small>A Part of JAIDEV ENTERPRISES</small></footer>`;
 $("publicLinks").innerHTML=(links||[]).map(l=>`
   <a class="pbtn" href="${esc(l.url)}"
      target="_blank" rel="noopener noreferrer"
