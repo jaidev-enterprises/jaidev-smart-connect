@@ -262,11 +262,7 @@ async function renderPublic(slug){
   <h1>${esc(c.business_name)}</h1>
   <p class="muted">${esc(c.welcome_text||"Connect with us")}</p>
   <div id="publicLinks"></div>
-  <footer class="powered-footer">
-   <span>Powered by</span>
-   <strong>JAIDEV SMART CONNECT</strong>
-   <small>A Part of JAIDEV EDUCATIONAL TRUST</small>
-  </footer>
+  <footer class="powered-footer"><span>Powered by</span><strong>JAIDEV SMART CONNECT</strong><small>A Part of JAIDEV EDUCATIONAL TRUST</small></footer>
  `;
 
  $("publicLinks").innerHTML=(links||[]).map(l=>`
