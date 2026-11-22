@@ -112,7 +112,6 @@ overflow-wrap:anywhere;
 }
 }
 </style>
-</style>
 </head>
 <body>
 <header><div class="top"><div class="brand"><span>JAIDEV</span> <span>SMART</span> <span>CONNECT</span><div class="muted" style="font-size:11px;font-weight:500">JAIDEV ENTERPRISES</div></div><div class="row"><span id="userLabel" class="muted"></span><button id="logoutBtn" class="secondary hidden">Logout</button></div></div></header>
@@ -216,7 +215,74 @@ async function init(){
  });
 }
 
-async function enterApp(user){
+
+function logoFor(type){
+ const svg=(body)=>`<svg viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+ const logos={
+  "Google Reviews":svg(`<path fill="#4285F4" d="M56 33c0-2-.2-4-.6-6H32v11h13.5a12 12 0 0 1-5 7.8v6.4h8.1C53.3 47.7 56 41 56 33Z"/><path fill="#34A853" d="M32 57c6.5 0 12-2.1 16-5.8l-8.1-6.4c-2.2 1.5-4.8 2.4-7.9 2.4-6.1 0-11.3-4.1-13.2-9.6h-8.4v6.6A24 24 0 0 0 32 57Z"/><path fill="#FBBC05" d="M18.8 37.6a14.5 14.5 0 0 1 0-11.2v-6.6h-8.4a25 25 0 0 0 0 24.4l8.4-6.6Z"/><path fill="#EA4335" d="M32 15.8c3.5 0 6.7 1.2 9.2 3.6l6.9-6.9C43.9 8.4 38.4 6 32 6a24 24 0 0 0-21.6 13.8l8.4 6.6c1.9-5.5 7.1-10.6 13.2-10.6Z"/>`),
+  "Instagram":svg(`<rect x="8" y="8" width="48" height="48" rx="14" fill="#E1306C"/><circle cx="32" cy="32" r="11" fill="none" stroke="white" stroke-width="4"/><circle cx="46" cy="18" r="3" fill="white"/>`),
+  "Facebook":svg(`<circle cx="32" cy="32" r="28" fill="#1877F2"/><path fill="white" d="M36 55V35h7l1-8h-8v-5c0-2 1-4 4-4h4v-7h-7c-8 0-11 5-11 12v4h-6v8h6v20Z"/>`),
+  "WhatsApp":svg(`<circle cx="32" cy="30" r="25" fill="#25D366"/><path fill="white" d="M20 17c-5 6-2 16 5 23s17 10 23 5l-7-7-6 4-10-10 4-6-9-9Z"/><path fill="#25D366" d="m12 53 4-12 8 8Z"/>`),
+  "UPI Payment":svg(`<rect x="7" y="12" width="50" height="40" rx="8" fill="#5F259F"/><path d="M31 18 20 35h9l-3 11 18-22h-11l3-6Z" fill="white"/>`),
+  "Maps":svg(`<path fill="#34A853" d="M32 59S10 37 10 25a22 22 0 1 1 44 0C54 37 32 59 32 59Z"/><circle cx="32" cy="25" r="8" fill="white"/>`),
+  "Website":svg(`<circle cx="32" cy="32" r="25" fill="#2563EB"/><circle cx="32" cy="32" r="16" fill="none" stroke="white" stroke-width="3"/><path d="M7 32h50M32 7c-10 12-10 38 0 50M32 7c10 12 10 38 0 50" fill="none" stroke="white" stroke-width="3"/>`),
+  "Call":svg(`<circle cx="32" cy="32" r="28" fill="#16A34A"/><path fill="white" d="M20 12c-5 2-7 8-5 14 5 13 15 23 28 28 6 2 12-1 14-6l-12-8-6 6c-7-3-12-8-15-15l6-6-10-13Z"/>`),
+  "Menu / Catalogue":svg(`<rect x="12" y="6" width="40" height="52" rx="5" fill="#F59E0B"/><path d="M21 19h22M21 29h22M21 39h17" stroke="white" stroke-width="4" stroke-linecap="round"/>`),
+  "Other":svg(`<circle cx="32" cy="32" r="27" fill="#64748B"/><circle cx="20" cy="32" r="3" fill="white"/><circle cx="32" cy="32" r="3" fill="white"/><circle cx="44" cy="32" r="3" fill="white"/>`)
+ };
+ return logos[type]||logos["Website"];
+}
+
+async function renderPublic(slug){
+ $("publicPage").classList.remove("hidden");
+ $("configNotice").classList.add("hidden");
+
+ const {data:c,error}=await sb.from("customers")
+  .select("*").eq("slug",slug).eq("active",true).single();
+
+ if(error||!c){
+  $("publicCard").innerHTML="<h2>Page unavailable</h2><p>This business page may be inactive or the address is incorrect.</p>";
+  return;
+ }
+
+ const {data:links,error:linksError}=await sb.from("business_links")
+  .select("*").eq("customer_id",c.id).eq("active",true).order("position");
+
+ if(linksError){
+  $("publicCard").innerHTML="<h2>Unable to load links</h2><p>Please try again later.</p>";
+  return;
+ }
+
+ const logoSafe=c.logo_url&&/^https?:\/\//i.test(c.logo_url)?esc(c.logo_url):"";
+
+ $("publicCard").style.background=c.background_color||"#fff";
+
+ $("publicCard").innerHTML=`
+  ${logoSafe?`<img class="logo" src="${logoSafe}" alt="Business logo">`:""}
+  <h1>${esc(c.business_name)}</h1>
+  <p class="muted">${esc(c.welcome_text||"Connect with us")}</p>
+  <div id="publicLinks"></div>
+  <footer class="powered-footer">
+   <span>Powered by</span>
+   <strong>JAIDEV EDUCATIONAL TRUST</strong>
+   <small>A Part of JAIDEV ENTERPRISES</small>
+  </footer>
+ `;
+
+ $("publicLinks").innerHTML=(links||[]).map(l=>`
+  <a class="pbtn" href="${esc(l.url)}"
+   target="_blank" rel="noopener noreferrer"
+   data-link="${esc(l.id)}"
+   title="${esc(l.label)}"
+   aria-label="${esc(l.label)}">
+   ${l.icon_url&&/^https?:\/\//i.test(l.icon_url)
+    ?`<img src="${esc(l.icon_url)}" alt="">`
+    :logoFor(l.link_type)}
+   <span>${esc(l.label)}</span>
+  </a>
+ `).join("")||"<p>No links have been added yet.</p>";
+                                   }
+                                async function enterApp(user){
  currentUser=user;const {data:profile,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
  if(error||!profile||!["admin","staff"].includes(profile.role)){await sb.auth.signOut();msg($("authMsg"),"This account has no JAIDEV admin/staff permission. Ask the administrator to assign a role.",true);return}
  currentProfile=profile;$("authSection").classList.add("hidden");$("appSection").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("userLabel").textContent=user.email;$("rolePill").textContent=profile.role.toUpperCase();
