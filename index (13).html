@@ -1,0 +1,1114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Smart Connect</title>
+<meta name="theme-color" content="#ffffff">
+<style>
+:root{--blue:#4285f4;--red:#ea4335;--yellow:#fbbc05;--green:#34a853;--ink:#182230;--muted:#64748b;--bg:#f4f7fb;--line:#e5eaf1}
+*{box-sizing:border-box}
+body{margin:0;font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+header{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.top{max-width:1100px;margin:auto;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:850;letter-spacing:.2px}.brand span:nth-child(1){color:var(--blue)}.brand span:nth-child(2){color:var(--red)}.brand span:nth-child(3){color:var(--yellow)}.brand span:nth-child(4){color:var(--green)}
+main{max-width:1100px;margin:22px auto;padding:0 16px 50px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #17255408}
+h1,h2,h3{margin:0 0 12px}h1{font-size:24px}h2{font-size:19px}h3{font-size:16px}
+small,.muted{color:var(--muted)}label{display:block;font-size:13px;font-weight:650;margin:10px 0 5px}
+input,select,textarea{width:100%;padding:11px 12px;border:1px solid #cfd8e3;border-radius:10px;font:inherit;background:#fff;color:var(--ink)}
+textarea{min-height:75px;resize:vertical}
+button,.btn{border:0;border-radius:10px;padding:11px 15px;font:700 14px system-ui;cursor:pointer;background:var(--blue);color:white}
+button.secondary{background:#edf2f8;color:#26364a}
+button.danger{background:#fee2e2;color:#991b1b}
+button.success{background:#16a34a;color:#fff}
+button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.hidden{display:none!important}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.tabs button{background:#e9eff8;color:#30435c}
+.tabs button.active{background:var(--blue);color:#fff}
+.stat{padding:14px;border:1px solid var(--line);border-radius:12px;background:#fbfdff}.stat b{font-size:25px;display:block}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}
+.itemhead{display:flex;justify-content:space-between;gap:10px;align-items:center}
+hr{border:0;border-top:1px solid var(--line);margin:16px 0}
+.notice{padding:12px;border-radius:10px;background:#eff6ff;color:#1e40af;margin:10px 0}
+.error{background:#fff1f2;color:#9f1239}
+.success{background:#ecfdf5;color:#166534}
+a{color:var(--blue);overflow-wrap:anywhere}
+.qrbox{background:white;border:1px dashed #b8c5d6;border-radius:12px;padding:12px;display:inline-block}
+
+/* FULL SCREEN WHITE-LABEL CUSTOMER PAGE (MATCHING SCREENSHOT) */
+body.customer-mode{background:#fff}
+body.customer-mode main{display:none!important}
+.public{
+  width:100%;
+  min-height:100vh;
+  margin:0;
+  padding:0;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.publiccard{
+  width:100%;
+  max-width:460px;
+  min-height:100vh;
+  margin:0 auto;
+  padding:44px 20px 36px;
+  text-align:center;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+}
+.publiccard .logo{
+  display:block;
+  width:190px;
+  max-width:75%;
+  height:auto;
+  max-height:140px;
+  object-fit:contain;
+  margin:0 auto 22px;
+}
+.publiccard h1{
+  font-size:24px;
+  font-weight:700;
+  color:#4b5563;
+  margin:0 0 8px;
+  letter-spacing:-0.2px;
+}
+.publiccard .tagline{
+  font-size:14.5px;
+  color:#6b7280;
+  margin:0 0 28px;
+  line-height:1.4;
+}
+#publicLinks{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:24px 16px;
+  width:100%;
+  max-width:360px;
+  margin:10px auto 0;
+}
+.pbtn{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  text-decoration:none;
+  color:#6b7280;
+  gap:8px;
+  padding:4px;
+  transition:transform .15s ease;
+}
+.pbtn:active{transform:scale(0.95)}
+.pbtn .icon-wrap{
+  width:68px;
+  height:68px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  background:#fff;
+}
+.pbtn img,.pbtn svg{
+  width:64px;
+  height:64px;
+  object-fit:contain;
+  display:block;
+}
+.pbtn span{
+  font-size:13px;
+  font-weight:500;
+  color:#737373;
+  line-height:1.25;
+  text-align:center;
+  word-break:break-word;
+}
+
+/* Digital Menu Overlay on Customer Page */
+#customerMenu{
+  width:100%;
+  max-width:540px;
+  text-align:left;
+  padding:16px 0;
+}
+.menu-cat-title{
+  font-size:17px;
+  font-weight:750;
+  color:#111827;
+  padding-bottom:6px;
+  border-bottom:2px solid #f1f5f9;
+  margin:22px 0 10px;
+}
+.menu-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid #f1f5f9;
+}
+.menu-row b{font-size:15px;color:#1f2937}
+.menu-price{font-weight:750;color:#16a34a;white-space:nowrap;font-size:15px}
+
+/* Shop Owner Self-Service Portal */
+.owner-shell{max-width:680px;margin:0 auto;padding:24px 16px 50px;min-height:100vh;background:#fff}
+.ocr-box{background:#f8fafc;border:1.5px dashed #94a3b8;border-radius:14px;padding:16px;margin:12px 0}
+.ocr-row{display:grid;grid-template-columns:1.2fr 1.6fr 95px 36px;gap:8px;align-items:center;margin-bottom:8px}
+
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#172033;color:white;padding:11px 16px;border-radius:12px;z-index:50;display:none;max-width:90%;text-align:center}
+@media(max-width:650px){
+  .grid,.grid3{grid-template-columns:1fr}
+  .top{align-items:flex-start}
+  main{margin-top:12px}
+  .panel{padding:14px}
+  .ocr-row{grid-template-columns:1fr 1fr;border-bottom:1px solid #e2e8f0;padding-bottom:8px}
+}
+</style>
+</head>
+<body>
+<header id="mainHeader"><div class="top"><div class="brand"><span>JAIDEV</span> <span>SMART</span> <span>CONNECT</span><div class="muted" style="font-size:11px;font-weight:500">JAIDEV ENTERPRISES</div></div><div class="row"><span id="userLabel" class="muted"></span><button id="logoutBtn" class="secondary hidden">Logout</button></div></div></header>
+
+<main id="adminMain">
+<section id="configNotice" class="panel">
+<h1>Connect your Supabase project</h1>
+<p class="muted">This application is ready to connect. Add your Supabase Project URL and anon/public key in the configuration section of this file.</p>
+</section>
+
+<section id="authSection" class="panel hidden">
+<h1>JAIDEV staff login</h1><p class="muted">Sign in using an account created by the JAIDEV administrator.</p>
+<div class="grid"><div><label>Email</label><input id="email" type="email" autocomplete="username" placeholder="staff@example.com"></div><div><label>Password</label><input id="password" type="password" autocomplete="current-password" placeholder="Password"></div></div>
+<div class="row" style="margin-top:14px"><button id="loginBtn">Sign in</button><button id="resetBtn" class="secondary">Reset password email</button></div>
+<div id="authMsg" class="notice hidden"></div>
+</section>
+
+<section id="appSection" class="hidden">
+<div class="panel">
+<div class="row" style="justify-content:space-between"><div><h1>Master control panel</h1><div class="muted">Customer accounts, multi-link pages, digital menu OCR, NFC and analytics</div></div><span id="rolePill" class="notice">Staff</span></div>
+<div class="grid3" style="margin-top:14px">
+<div class="stat"><small>Total businesses</small><b id="statCustomers">0</b></div><div class="stat"><small>Active businesses</small><b id="statActive">0</b></div><div class="stat"><small>Tracked interactions</small><b id="statEvents">0</b></div>
+</div>
+<div class="tabs">
+  <button class="active" data-tab="customersTab">Customers</button>
+  <button data-tab="linksTab">Links & QR</button>
+  <button data-tab="menuTab">Digital Menu & OCR</button>
+  <button data-tab="analyticsTab">Analytics</button>
+  <button data-tab="staffTab" id="staffTabButton">Staff</button>
+</div>
+</div>
+
+<!-- CUSTOMERS TAB -->
+<section id="customersTab" class="panel tabpane">
+<div class="row" style="justify-content:space-between"><h2>Business customers</h2><button id="newCustomerBtn">+ Add customer</button></div><div id="customerList"></div>
+<div id="customerForm" class="item hidden"><h3 id="customerFormTitle">Add business</h3><input id="customerId" type="hidden">
+<div class="grid">
+  <div><label>Business name *</label><input id="cName" placeholder="Example: Jazz Life Style"></div>
+  <div><label>Unique page slug *</label><input id="cSlug" placeholder="jazz-life-style"></div>
+  <div><label>Registered Owner Mobile Number * (for Menu Edit Access)</label><input id="cPhone" placeholder="9876543210"></div>
+  <div><label>Business category</label><input id="cCategory" placeholder="Restaurant / Café / Retail / Salon"></div>
+  <div><label>Background colour</label><input id="cColor" type="color" value="#ffffff"></div>
+  <div><label>Logo image URL</label><input id="cLogo" placeholder="https://..."></div>
+  <div><label>Choose business logo from gallery</label>
+    <input id="cLogoFile" type="file" accept="image/png,image/jpeg,image/webp">
+    <img id="cLogoPreview" style="display:none;width:120px;height:120px;object-fit:contain;margin-top:10px;border-radius:12px" alt="Business logo preview">
+  </div>
+</div>
+<label>Short tagline / welcome message</label><input id="cWelcome" placeholder="One-stop solution for your needs">
+<label>Business status</label><select id="cActive"><option value="true">Active</option><option value="false">Suspended</option></select>
+<div class="row" style="margin-top:12px"><button id="saveCustomerBtn">Save customer</button><button id="cancelCustomerBtn" class="secondary">Cancel</button></div></div>
+</section>
+
+<!-- LINKS & QR TAB -->
+<section id="linksTab" class="panel tabpane hidden"><h2>Links, QR and NFC</h2><label>Select business</label><select id="linkCustomer"></select><div id="linkWorkspace" class="hidden"><div class="grid"><div>
+<h3>Add a button / link</h3>
+<label>Button label</label><input id="lLabel" placeholder="Example: Maps, Reviews, WhatsApp, Menu">
+<label>Destination URL / Customer UPI ID (Leave blank if Service = Menu / Catalogue)</label><input id="lUrl" placeholder="https://... or name@bank">
+<label>Service / logo type</label><select id="lType"><option>Maps</option><option>Google Reviews</option><option>WhatsApp</option><option>Instagram</option><option>YouTube</option><option>Facebook</option><option>Website</option><option>Call</option><option>Menu / Catalogue</option><option>UPI Payment</option><option>Swiggy</option><option>Zomato</option><option>Other / Custom</option></select>
+<label>Upload custom icon (optional)</label><input id="lLogoFile" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"><small>PNG, JPG, WEBP or SVG · max 2 MB.</small><div id="logoUploadStatus" class="muted" style="margin-top:6px"></div>
+<div class="row" style="margin-top:12px"><button id="addLinkBtn">Add link</button></div><div id="linkList"></div></div><div>
+<h3>Customer Public Page QR & URL</h3><p class="muted">Full-screen white-label customer page URL:</p><div class="qrbox"><div id="qrcode"></div></div><div id="pageUrl" class="muted" style="margin:8px 0;overflow-wrap:anywhere"></div>
+<div class="row"><button id="downloadQrBtn" class="secondary">Download QR PNG</button><button id="copyUrlBtn" class="secondary">Copy customer URL</button></div>
+<hr>
+<h3>Shop Owner Self-Service Menu Link</h3>
+<p class="muted">Share this link with the shop owner so they can add/edit their menu anytime using their registered mobile number:</p>
+<div id="ownerManageUrl" class="notice" style="overflow-wrap:anywhere"></div>
+<button id="copyOwnerUrlBtn" class="secondary">Copy shop owner menu link</button>
+<hr><h3>NFC programming</h3><p class="muted">On supported Android Chrome devices over HTTPS, tap Write NFC and hold an NTAG213 tag near the phone.</p><button id="writeNfcBtn">Write URL to NFC tag</button><div id="nfcMsg" class="notice hidden"></div>
+</div></div></div></section>
+
+<!-- DIGITAL MENU & IMAGE OCR TAB -->
+<section id="menuTab" class="panel tabpane hidden">
+<h2>Digital Menu & Menu Card Image Converter</h2>
+<label>Select business</label>
+<select id="menuCustomer"></select>
+
+<div id="menuWorkspace" class="hidden" style="margin-top:14px">
+  <div class="ocr-box">
+    <h3>Convert Menu Card Image to Digital Menu</h3>
+    <p class="muted">Upload a clear photo of the printed menu card. All categories, item names, and prices will be extracted automatically so you can verify and save them in one click.</p>
+    <div class="row">
+      <input id="adminMenuImgInput" type="file" accept="image/*" style="max-width:340px">
+      <button id="adminScanMenuBtn" type="button">Extract Menu from Image</button>
+    </div>
+    <div id="adminOcrStatus" class="muted" style="margin-top:8px"></div>
+    <div id="adminOcrPreview" class="hidden" style="margin-top:12px">
+      <h4>Review & Edit Extracted Menu Items</h4>
+      <div id="adminOcrRows"></div>
+      <div class="row" style="margin-top:10px">
+        <button id="adminAddOcrRowBtn" class="secondary" type="button">+ Add row</button>
+        <button id="adminSaveOcrBtn" class="success" type="button">Save All to Digital Menu</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="item">
+      <h3>Add Category Manually</h3>
+      <div class="row">
+        <input id="adminNewCatName" placeholder="e.g., Starters, Main Course, Beverages">
+        <button id="adminAddCatBtn" type="button">Add Category</button>
+      </div>
+    </div>
+    <div class="item">
+      <h3>Add Single Menu Item</h3>
+      <select id="adminItemCat"></select>
+      <div class="grid" style="margin-top:8px">
+        <input id="adminItemName" placeholder="Item name (e.g., Paneer Tikka)">
+        <input id="adminItemPrice" type="number" step="0.01" placeholder="Price (₹)">
+      </div>
+      <input id="adminItemDesc" placeholder="Description / ingredients (optional)" style="margin-top:8px">
+      <button id="adminAddItemBtn" type="button" style="margin-top:8px">Add Item</button>
+    </div>
+  </div>
+
+  <h3 style="margin-top:18px">Current Live Digital Menu</h3>
+  <div id="adminMenuTree"></div>
+</div>
+</section>
+
+<!-- ANALYTICS TAB -->
+<section id="analyticsTab" class="panel tabpane hidden"><h2>Analytics</h2><label>Business</label><select id="analyticsCustomer"></select><div class="grid3"><div class="stat"><small>Page visits</small><b id="aViews">0</b></div><div class="stat"><small>Button clicks</small><b id="aClicks">0</b></div><div class="stat"><small>Unique sessions (approx.)</small><b id="aSessions">0</b></div></div><h3 style="margin-top:18px">Button performance</h3><div id="analyticsRows"></div></section>
+
+<!-- STAFF TAB -->
+<section id="staffTab" class="panel tabpane hidden"><h2>Staff accounts</h2><p class="muted">Create staff users in Supabase Authentication first, then assign the staff role in the profiles table.</p></section>
+</section>
+</main>
+
+<!-- FULL-SCREEN WHITE-LABEL CUSTOMER VIEW -->
+<section id="publicPage" class="public hidden">
+  <div class="publiccard" id="publicCard"></div>
+</section>
+
+<!-- SHOP OWNER SELF-SERVICE MENU PORTAL (?manage=slug) -->
+<section id="ownerPortal" class="owner-shell hidden">
+  <div id="ownerLoginCard" class="panel" style="max-width:420px;margin:40px auto">
+    <h2 id="ownerPortalTitle">Shop Owner Menu Login</h2>
+    <p class="muted">Enter your registered mobile number to add or update your digital menu.</p>
+    <label>Registered Mobile Number</label>
+    <input id="ownerPhoneInput" type="tel" placeholder="Enter 10-digit mobile number">
+    <button id="ownerVerifyBtn" style="width:100%;margin-top:14px">Verify & Open Menu Manager</button>
+    <div id="ownerLoginMsg" class="notice hidden"></div>
+  </div>
+
+  <div id="ownerDashboard" class="hidden">
+    <div class="row" style="justify-content:space-between;margin-bottom:14px">
+      <div>
+        <h1 id="ownerBizHeading" style="margin:0">Menu Manager</h1>
+        <small class="muted">Changes update instantly on your customer QR/NFC page</small>
+      </div>
+      <a id="ownerViewCustomerPage" href="#" target="_blank" class="btn secondary" style="text-decoration:none">Preview Customer Page</a>
+    </div>
+
+    <div class="ocr-box">
+      <h3>Upload Menu Card Photo to Convert to Digital</h3>
+      <p class="muted">Take a photo or choose an image of your menu card to automatically extract all items and prices.</p>
+      <div class="row">
+        <input id="ownerMenuImgInput" type="file" accept="image/*">
+        <button id="ownerScanMenuBtn" type="button">Scan Menu Image</button>
+      </div>
+      <div id="ownerOcrStatus" class="muted" style="margin-top:8px"></div>
+      <div id="ownerOcrPreview" class="hidden" style="margin-top:12px">
+        <h4>Confirm Extracted Menu Items</h4>
+        <div id="ownerOcrRows"></div>
+        <div class="row" style="margin-top:10px">
+          <button id="ownerAddOcrRowBtn" class="secondary" type="button">+ Add row</button>
+          <button id="ownerSaveOcrBtn" class="success" type="button">Save All to My Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3>Add New Category</h3>
+      <div class="row">
+        <input id="ownerNewCatName" placeholder="Category name (e.g., South Indian, Combos)">
+        <button id="ownerAddCatBtn" type="button">Add</button>
+      </div>
+    </div>
+
+    <div class="item">
+      <h3 id="ownerItemFormTitle">Add / Edit Menu Item</h3>
+      <input id="ownerEditItemId" type="hidden">
+      <label>Category</label>
+      <select id="ownerItemCat"></select>
+      <div class="grid">
+        <div><label>Item Name *</label><input id="ownerItemName" placeholder="Dish or product name"></div>
+        <div><label>Price (₹) *</label><input id="ownerItemPrice" type="number" step="0.01" placeholder="0.00"></div>
+      </div>
+      <label>Description (optional)</label>
+      <input id="ownerItemDesc" placeholder="Short details, quantity, or ingredients">
+      <div class="row" style="margin-top:10px">
+        <button id="ownerSaveItemBtn" type="button">Save Menu Item</button>
+        <button id="ownerCancelEditBtn" class="secondary hidden" type="button">Cancel Edit</button>
+      </div>
+    </div>
+
+    <h3 style="margin-top:20px">Your Digital Menu Items</h3>
+    <div id="ownerMenuTree"></div>
+  </div>
+</section>
+
+<div id="toast"></div>
+
+<script>
+const SUPABASE_URL = "https://liwbcukxfblilhpptmfv.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_JOvd70TRkO2Dhp6WrEc9PA_MI27faFh";
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(location.search);
+const publicSlug = params.get("p");
+const manageSlug = params.get("manage");
+
+let sb=null, currentUser=null, currentProfile=null, customers=[], selectedCustomer=null, qr=null;
+let ownerPhone="", ownerData={categories:[], items:[]};
+
+function toast(msg){$("toast").textContent=msg;$("toast").style.display="block";setTimeout(()=>$("toast").style.display="none",2800)}
+function msg(el,text,error=false){el.textContent=text;el.classList.remove("hidden","error","success");el.classList.add(error?"error":"success")}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function slugify(s){return s.toLowerCase().trim().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}
+
+const PUBLIC_SITE_URL = "https://jaidev-enterprises.github.io/jaidev-smart-connect/";
+function pageUrl(c){
+  const url = new URL(PUBLIC_SITE_URL);
+  url.searchParams.set("p", c.slug);
+  return url.toString();
+}
+function manageUrl(c){
+  const url = new URL(PUBLIC_SITE_URL);
+  url.searchParams.set("manage", c.slug);
+  return url.toString();
+}
+function isConfigured(){
+  return typeof SUPABASE_URL==="string" && SUPABASE_URL.startsWith("https://") &&
+         typeof SUPABASE_ANON_KEY==="string" && SUPABASE_ANON_KEY.startsWith("sb_publishable_");
+}
+
+/* Crisp Rounded-Square App Icons Matching Screenshot Style */
+function logoFor(type){
+  const svg=(body)=>`<svg viewBox="0 0 64 64" role="img" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+  const logos={
+    "Maps":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#F3F4F6"/><path fill="#34A853" d="M32 54S16 36 16 26a16 16 0 1 1 32 0c0 10-16 28-16 28Z"/><path fill="#4285F4" d="M32 10a16 16 0 0 0-16 16h16Z"/><path fill="#FBBC05" d="M32 10a16 16 0 0 1 16 16H32Z"/><path fill="#EA4335" d="M16 26a16 16 0 0 0 16 16V26Z"/><circle cx="32" cy="26" r="6.5" fill="#fff"/>`),
+    "Google Reviews":svg(`<path fill="#FBBC05" d="M32 6l7.6 15.4 17 2.5-12.3 12 2.9 16.9L32 44.8l-15.2 8 2.9-16.9-12.3-12 17-2.5L32 6z"/><circle cx="48" cy="18" r="10" fill="#fff"/><path fill="#4285F4" d="M54 18.2c0-.5 0-1-.1-1.4H48v2.6h3.4a3 3 0 0 1-1.3 1.9v1.6h2.1c1.2-1.1 1.8-2.8 1.8-4.7Z"/><path fill="#34A853" d="M48 24.5c1.7 0 3.1-.6 4.2-1.5l-2.1-1.6c-.6.4-1.3.6-2.1.6-1.6 0-3-1.1-3.5-2.5h-2.2v1.7a6.3 6.3 0 0 0 5.7 3.3Z"/><path fill="#FBBC05" d="M44.5 19.5a3.8 3.8 0 0 1 0-3v-1.7h-2.2a6.4 6.4 0 0 0 0 6.4l2.2-1.7Z"/><path fill="#EA4335" d="M48 14c.9 0 1.8.3 2.4.9l1.8-1.8A6.2 6.2 0 0 0 48 11.5a6.3 6.3 0 0 0-5.7 3.3l2.2 1.7c.5-1.4 1.9-2.5 3.5-2.5Z"/>`),
+    "WhatsApp":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#25D366"/><path fill="none" stroke="#fff" stroke-width="3.5" d="M18 46l2.4-7.5A15 15 0 1 1 26.5 44L18 46Z"/><path fill="#fff" d="M26 23c-.6-1.4-1.2-1.4-1.8-1.4h-1.5c-.6 0-1.5.2-2.2 1s-2.8 2.8-2.8 6.8 2.9 7.8 3.3 8.4 5.6 9 13.8 11.4c6.8 2 8.2 1.6 9.7 1.4s4.7-1.9 5.4-3.8.6-3.4.4-3.8-.8-.6-1.7-1-4.7-2.3-5.4-2.6-1.3-.4-1.9.4-2.1 2.6-2.6 3.2-1 .6-1.9.2a22 22 0 0 1-6.4-4 24 24 0 0 1-4.4-5.4c-.5-.9-.1-1.4.3-1.8.4-.4.9-1 1.3-1.5.4-.5.6-.9.9-1.5.2-.6.1-1.1 0-1.5L26 23Z"/>`),
+    "Instagram":svg(`<defs><linearGradient id="igG" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#FFB000"/><stop offset=".45" stop-color="#F00075"/><stop offset="1" stop-color="#7B35C8"/></linearGradient></defs><rect x="4" y="4" width="56" height="56" rx="14" fill="url(#igG)"/><rect x="15" y="15" width="34" height="34" rx="10" fill="none" stroke="#fff" stroke-width="3.8"/><circle cx="32" cy="32" r="8" fill="none" stroke="#fff" stroke-width="3.8"/><circle cx="43.5" cy="20.5" r="2.6" fill="#fff"/>`),
+    "YouTube":svg(`<rect x="4" y="10" width="56" height="44" rx="13" fill="#FF0000"/><path fill="#fff" d="M26 23v18l16-9-16-9Z"/>`),
+    "Facebook":svg(`<circle cx="32" cy="32" r="28" fill="#1877F2"/><path fill="#fff" d="M36.5 58V35.5h7.2l1.1-8.5h-8.3v-5.4c0-2.5.7-4.1 4.2-4.1h4.5v-7.6c-.8-.1-3.6-.4-6.9-.4-6.9 0-11.6 4.2-11.6 11.9V27h-7.3v8.5h7.3V58Z"/>`),
+    "Call":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#22C55E"/><path fill="#fff" d="M21 15c-2.6 0-6 4.3-6 7.8 0 12.2 14.8 27 27 27 3.5 0 7.8-3.4 7.8-6l-1.8-5.2-8.7-4.3-4.3 5.2c-4.3-1.8-8.7-6.1-10.4-10.4l5.2-4.3-4.3-8.7L21 15Z"/>`),
+    "Website":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#2563EB"/><circle cx="32" cy="32" r="18" fill="none" stroke="#fff" stroke-width="3"/><path d="M14 32h36M32 14c6 6 6 30 0 36M32 14c-6 6-6 30 0 36" stroke="#fff" stroke-width="2.6" fill="none"/>`),
+    "Menu / Catalogue":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#F97316"/><rect x="17" y="13" width="30" height="38" rx="4" fill="#fff"/><path d="M23 23h18M23 31h18M23 39h12" stroke="#F97316" stroke-width="3.5" stroke-linecap="round"/>`),
+    "UPI Payment":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#5F259F"/><path d="M31 15 19 34h10l-3 15 19-23H34l3-11Z" fill="#fff"/>`),
+    "Swiggy":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#FC8019"/><path fill="#fff" d="M32 13c-8.8 0-16 7-16 15.7 0 9.6 13.4 20.5 15.1 21.8.5.4 1.3.4 1.8 0 1.7-1.3 15.1-12.2 15.1-21.8C48 20 40.8 13 32 13Zm0 21a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11Z"/>`),
+    "Zomato":svg(`<rect x="4" y="4" width="56" height="56" rx="14" fill="#E23744"/><text x="32" y="38" font-size="15" font-weight="900" font-style="italic" fill="#fff" text-anchor="middle">zomato</text>`)
+  };
+  return logos[type]||logos["Website"];
+}
+
+async function init(){
+  if(!isConfigured()){
+    $("configNotice").classList.remove("hidden");
+    return;
+  }
+  sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  $("configNotice").classList.add("hidden");
+
+  // 1. Customer Public Full-Screen View (?p=slug) - Zero Jaidev Branding
+  if(publicSlug){
+    document.body.classList.add("customer-mode");
+    $("mainHeader").classList.add("hidden");
+    $("adminMain").classList.add("hidden");
+    await renderPublic(publicSlug);
+    return;
+  }
+
+  // 2. Shop Owner Self-Service Menu Portal (?manage=slug) - Zero Jaidev Branding
+  if(manageSlug){
+    document.body.classList.add("customer-mode");
+    $("mainHeader").classList.add("hidden");
+    $("adminMain").classList.add("hidden");
+    initOwnerPortal(manageSlug);
+    return;
+  }
+
+  // 3. Master Admin Panel
+  $("authSection").classList.remove("hidden");
+  const {data:{session}}=await sb.auth.getSession();
+  if(session) await enterApp(session.user);
+
+  sb.auth.onAuthStateChange((_event,session)=>{
+    if(session&&!currentUser) enterApp(session.user);
+    else if(!session){
+      currentUser=null;
+      $("appSection").classList.add("hidden");
+      $("authSection").classList.remove("hidden");
+      $("logoutBtn").classList.add("hidden");
+    }
+  });
+}
+
+/* =========================================================
+   FULL-SCREEN WHITE-LABEL CUSTOMER PAGE (SCREENSHOT LAYOUT)
+   ========================================================= */
+async function renderPublic(slug){
+  $("publicPage").classList.remove("hidden");
+  const {data:c,error}=await sb.from("customers").select("*").eq("slug",slug).eq("active",true).single();
+  if(error||!c){
+    $("publicCard").innerHTML="<h2>Page unavailable</h2><p class='tagline'>This business page may be inactive or the address is incorrect.</p>";
+    return;
+  }
+  document.title = c.business_name;
+  const {data:links,error:linksError}=await sb.from("business_links").select("*").eq("customer_id",c.id).eq("active",true).order("position");
+  if(linksError){
+    $("publicCard").innerHTML="<h2>Unable to load links</h2><p class='tagline'>Please try again later.</p>";
+    return;
+  }
+
+  // Track page view
+  const sessionKey="jsc_"+slug;
+  let sid=sessionStorage.getItem(sessionKey);
+  if(!sid){sid=crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random();sessionStorage.setItem(sessionKey,sid)}
+  sb.from("scan_events").insert({customer_id:c.id,event_type:"page_view",session_id:sid}).then(()=>{});
+
+  const logoSafe = c.logo_url && /^https?:\/\//i.test(c.logo_url) ? esc(c.logo_url) : "";
+  const bg = c.background_color || "#ffffff";
+  document.body.style.background = bg;
+  $("publicPage").style.background = bg;
+  $("publicCard").style.background = bg;
+
+  $("publicCard").innerHTML = `
+    ${logoSafe ? `<img class="logo" src="${logoSafe}" alt="${esc(c.business_name)}">` : ""}
+    <h1>${esc(c.business_name)}</h1>
+    ${c.welcome_text ? `<p class="tagline">${esc(c.welcome_text)}</p>` : `<div style="height:18px"></div>`}
+    <div id="publicLinks"></div>
+    <section id="customerMenu" class="hidden">
+      <div class="row" style="justify-content:space-between;margin-bottom:10px">
+        <h2 style="margin:0;color:#111827">Digital Menu</h2>
+        <button id="closeMenuBtn" class="secondary" type="button">← Back</button>
+      </div>
+      <div id="menuContent"><p class="muted">Loading menu…</p></div>
+    </section>
+  `;
+
+  const openDigitalMenu = async () => {
+    $("publicLinks").classList.add("hidden");
+    $("customerMenu").classList.remove("hidden");
+    const host = $("menuContent");
+    host.innerHTML = "<p class='muted'>Loading menu…</p>";
+    const {data:cats} = await sb.from("menu_categories").select("id,name,position").eq("customer_id",c.id).eq("active",true).order("position");
+    const {data:items} = await sb.from("menu_items").select("id,category_id,name,description,price,photo_url,available,position").eq("customer_id",c.id).eq("available",true).order("position");
+
+    host.innerHTML = (cats||[]).map(cat => {
+      const rows = (items||[]).filter(it => it.category_id === cat.id);
+      if(!rows.length) return "";
+      return `<div>
+        <div class="menu-cat-title">${esc(cat.name)}</div>
+        ${rows.map(it => `
+          <div class="menu-row">
+            <div>
+              <b>${esc(it.name)}</b>
+              ${it.description ? `<div class="muted" style="font-size:13px;margin-top:2px">${esc(it.description)}</div>` : ""}
+            </div>
+            <div class="menu-price">₹${Number(it.price||0).toFixed(0)}</div>
+          </div>
+        `).join("")}
+      </div>`;
+    }).join("") || "<p class='muted'>Menu items will appear here once added by the shop owner.</p>";
+  };
+
+  $("closeMenuBtn").onclick = () => {
+    $("customerMenu").classList.add("hidden");
+    $("publicLinks").classList.remove("hidden");
+  };
+
+  $("publicLinks").innerHTML = (links||[]).map(l => {
+    const isMenu = l.link_type === "Menu / Catalogue" || l.url === "#menu";
+    return `
+      <a class="pbtn" href="${isMenu ? "#menu" : esc(l.url)}"
+         ${isMenu ? `data-open-menu="1"` : `target="_blank" rel="noopener noreferrer"`}
+         data-link="${esc(l.id)}">
+        <div class="icon-wrap">
+          ${l.icon_url && /^https?:\/\//i.test(l.icon_url)
+            ? `<img src="${esc(l.icon_url)}" alt="${esc(l.label)}">`
+            : logoFor(l.link_type)}
+        </div>
+        <span>${esc(l.label)}</span>
+      </a>
+    `;
+  }).join("") || "<p class='muted'>No links configured yet.</p>";
+
+  $("publicLinks").querySelectorAll(".pbtn").forEach(a => {
+    a.addEventListener("click", (e) => {
+      sb.from("scan_events").insert({customer_id:c.id,link_id:a.dataset.link,event_type:"button_click",session_id:sid}).then(()=>{});
+      if(a.dataset.openMenu === "1"){
+        e.preventDefault();
+        openDigitalMenu();
+      }
+    });
+  });
+}
+
+/* =========================================================
+   MENU CARD IMAGE TO DIGITAL MENU PARSER (OCR ENGINE)
+   ========================================================= */
+function parseMenuOcrText(rawText){
+  const lines = rawText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length >= 2);
+  const results = [];
+  let currentCategory = "Menu Items";
+
+  for(const line of lines){
+    const priceMatch = line.match(/(?:₹|rs\.?|inr)?\s*(\d{1,5}(?:\.\d{1,2})?)\s*(?:\/-)?\s*$/i);
+    if(priceMatch){
+      const price = parseFloat(priceMatch[1]);
+      let itemName = line.slice(0, priceMatch.index).replace(/[\.\-–—:_]+$/g, "").trim();
+      if(itemName.length >= 2 && price > 0 && price < 50000){
+        results.push({category: currentCategory, name: itemName, description: "", price});
+        continue;
+      }
+    }
+    if(!/\d/.test(line) && line.length >= 3 && line.length <= 36){
+      const cleanCat = line.replace(/[^a-zA-Z0-9 &\/\-]/g, "").trim();
+      if(cleanCat.length >= 3) currentCategory = cleanCat;
+    }
+  }
+  return results;
+}
+
+async function runImageToMenuOCR(fileInput, statusEl, previewBox, rowsContainer){
+  const file = fileInput.files[0];
+  if(!file){toast("Please choose a menu card image first");return;}
+  statusEl.textContent = "Reading menu card image... please wait 5–10 seconds.";
+  try{
+    const worker = await Tesseract.createWorker("eng");
+    const ret = await worker.recognize(file);
+    await worker.terminate();
+    const parsed = parseMenuOcrText(ret.data.text || "");
+    statusEl.textContent = parsed.length
+      ? `Extracted ${parsed.length} items! Review or edit below before saving.`
+      : "Could not auto-detect prices clearly. You can add rows manually below.";
+    previewBox.classList.remove("hidden");
+    rowsContainer.innerHTML = "";
+    (parsed.length ? parsed : [{category:"Main Menu", name:"", description:"", price:""}]).forEach(r => appendOcrRow(rowsContainer, r));
+  }catch(err){
+    statusEl.textContent = "OCR failed: " + err.message;
+  }
+}
+
+function appendOcrRow(container, row={category:"Main Menu", name:"", description:"", price:""}){
+  const div = document.createElement("div");
+  div.className = "ocr-row";
+  div.innerHTML = `
+    <input class="o-cat" placeholder="Category" value="${esc(row.category)}">
+    <input class="o-name" placeholder="Item Name" value="${esc(row.name)}">
+    <input class="o-price" type="number" step="0.01" placeholder="Price ₹" value="${esc(row.price)}">
+    <button type="button" class="danger" style="padding:8px" title="Remove">✕</button>
+  `;
+  div.querySelector("button").onclick = () => div.remove();
+  container.appendChild(div);
+}
+
+function collectOcrSections(container){
+  const map = new Map();
+  container.querySelectorAll(".ocr-row").forEach(r => {
+    const cat = r.querySelector(".o-cat").value.trim() || "Menu";
+    const name = r.querySelector(".o-name").value.trim();
+    const price = parseFloat(r.querySelector(".o-price").value) || 0;
+    if(!name) return;
+    if(!map.has(cat)) map.set(cat, []);
+    map.get(cat).push({name, description:"", price});
+  });
+  return Array.from(map.entries()).map(([category, items]) => ({category, items}));
+}
+
+/* =========================================================
+   SHOP OWNER SELF-SERVICE PORTAL (?manage=slug)
+   ========================================================= */
+function initOwnerPortal(slug){
+  $("ownerPortal").classList.remove("hidden");
+  $("ownerViewCustomerPage").href = `${PUBLIC_SITE_URL}?p=${encodeURIComponent(slug)}`;
+
+  const callOwnerRpc = async (action, payload={}) => {
+    const {data, error} = await sb.rpc("owner_menu_action", {
+      p_slug: slug,
+      p_phone: ownerPhone,
+      p_action: action,
+      p_payload: payload
+    });
+    if(error) throw new Error(error.message);
+    if(!data || !data.ok) throw new Error(data?.error || "Operation failed");
+    return data;
+  };
+
+  const refreshOwnerMenu = async () => {
+    const res = await callOwnerRpc("verify");
+    ownerData.categories = res.categories || [];
+    ownerData.items = res.items || [];
+    $("ownerBizHeading").textContent = res.business_name + " — Menu";
+
+    $("ownerItemCat").innerHTML = ownerData.categories.map(c =>
+      `<option value="${esc(c.id)}">${esc(c.name)}</option>`
+    ).join("") || `<option value="">Add a category first</option>`;
+
+    $("ownerMenuTree").innerHTML = ownerData.categories.map(cat => {
+      const items = ownerData.items.filter(i => i.category_id === cat.id);
+      return `<div class="item">
+        <div class="itemhead">
+          <b>${esc(cat.name)} (${items.length})</b>
+          <button class="danger" data-del-cat="${esc(cat.id)}">Delete Category</button>
+        </div>
+        ${items.map(it => `
+          <div class="menu-row">
+            <div>
+              <b>${esc(it.name)}</b> ${it.available ? "" : "<small style='color:#dc2626'>(Out of stock)</small>"}
+              ${it.description ? `<div class="muted" style="font-size:13px">${esc(it.description)}</div>` : ""}
+            </div>
+            <div class="row">
+              <span class="menu-price">₹${Number(it.price||0).toFixed(0)}</span>
+              <button class="secondary" style="padding:6px 10px" data-edit-item="${esc(it.id)}">Edit</button>
+              <button class="secondary" style="padding:6px 10px" data-toggle-item="${esc(it.id)}">${it.available ? "Hide" : "Show"}</button>
+              <button class="danger" style="padding:6px 10px" data-del-item="${esc(it.id)}">✕</button>
+            </div>
+          </div>
+        `).join("") || "<p class='muted'>No items in this category yet.</p>"}
+      </div>`;
+    }).join("") || "<p class='muted'>No categories yet. Upload a menu photo above or add a category.</p>";
+
+    $("ownerMenuTree").querySelectorAll("[data-del-cat]").forEach(b => b.onclick = async () => {
+      if(!confirm("Delete category and all its items?")) return;
+      await callOwnerRpc("delete_category", {id: b.dataset.delCat});
+      await refreshOwnerMenu();
+      toast("Category deleted");
+    });
+
+    $("ownerMenuTree").querySelectorAll("[data-del-item]").forEach(b => b.onclick = async () => {
+      await callOwnerRpc("delete_item", {id: b.dataset.delItem});
+      await refreshOwnerMenu();
+      toast("Item removed");
+    });
+
+    $("ownerMenuTree").querySelectorAll("[data-toggle-item]").forEach(b => b.onclick = async () => {
+      const it = ownerData.items.find(x => x.id === b.dataset.toggleItem);
+      if(!it) return;
+      await callOwnerRpc("save_item", {...it, available: !it.available});
+      await refreshOwnerMenu();
+      toast("Availability updated");
+    });
+
+    $("ownerMenuTree").querySelectorAll("[data-edit-item]").forEach(b => b.onclick = () => {
+      const it = ownerData.items.find(x => x.id === b.dataset.editItem);
+      if(!it) return;
+      $("ownerItemFormTitle").textContent = "Edit Menu Item";
+      $("ownerEditItemId").value = it.id;
+      $("ownerItemCat").value = it.category_id;
+      $("ownerItemName").value = it.name;
+      $("ownerItemPrice").value = it.price;
+      $("ownerItemDesc").value = it.description || "";
+      $("ownerCancelEditBtn").classList.remove("hidden");
+      $("ownerItemName").focus();
+    });
+  };
+
+  $("ownerVerifyBtn").onclick = async () => {
+    ownerPhone = $("ownerPhoneInput").value.trim();
+    try{
+      await refreshOwnerMenu();
+      $("ownerLoginCard").classList.add("hidden");
+      $("ownerDashboard").classList.remove("hidden");
+    }catch(e){
+      msg($("ownerLoginMsg"), e.message, true);
+    }
+  };
+
+  $("ownerAddCatBtn").onclick = async () => {
+    const name = $("ownerNewCatName").value.trim();
+    if(!name) return toast("Enter a category name");
+    await callOwnerRpc("add_category", {name});
+    $("ownerNewCatName").value = "";
+    await refreshOwnerMenu();
+    toast("Category added");
+  };
+
+  $("ownerCancelEditBtn").onclick = () => {
+    $("ownerItemFormTitle").textContent = "Add / Edit Menu Item";
+    $("ownerEditItemId").value = "";
+    $("ownerItemName").value = "";
+    $("ownerItemPrice").value = "";
+    $("ownerItemDesc").value = "";
+    $("ownerCancelEditBtn").classList.add("hidden");
+  };
+
+  $("ownerSaveItemBtn").onclick = async () => {
+    const category_id = $("ownerItemCat").value;
+    const name = $("ownerItemName").value.trim();
+    const price = parseFloat($("ownerItemPrice").value);
+    const description = $("ownerItemDesc").value.trim();
+    const id = $("ownerEditItemId").value;
+    if(!category_id || !name || isNaN(price)) return toast("Select category, item name and price");
+    await callOwnerRpc("save_item", {id, category_id, name, price, description, available:true});
+    $("ownerCancelEditBtn").click();
+    await refreshOwnerMenu();
+    toast("Menu item saved");
+  };
+
+  $("ownerScanMenuBtn").onclick = () => runImageToMenuOCR($("ownerMenuImgInput"), $("ownerOcrStatus"), $("ownerOcrPreview"), $("ownerOcrRows"));
+  $("ownerAddOcrRowBtn").onclick = () => appendOcrRow($("ownerOcrRows"));
+  $("ownerSaveOcrBtn").onclick = async () => {
+    const sections = collectOcrSections($("ownerOcrRows"));
+    if(!sections.length) return toast("Add at least one item to save");
+    await callOwnerRpc("bulk_import", {sections});
+    $("ownerOcrPreview").classList.add("hidden");
+    $("ownerOcrStatus").textContent = "All extracted menu items saved!";
+    await refreshOwnerMenu();
+    toast("Digital menu updated!");
+  };
+}
+
+/* =========================================================
+   MASTER ADMIN PANEL FUNCTIONS
+   ========================================================= */
+async function enterApp(user){
+  currentUser=user;
+  const {data:profile,error}=await sb.from("profiles").select("*").eq("id",user.id).single();
+  if(error||!profile||!["admin","staff"].includes(profile.role)){
+    await sb.auth.signOut();
+    msg($("authMsg"),"This account has no admin/staff permission.",true);
+    return;
+  }
+  currentProfile=profile;
+  $("authSection").classList.add("hidden");
+  $("appSection").classList.remove("hidden");
+  $("logoutBtn").classList.remove("hidden");
+  $("userLabel").textContent=user.email;
+  $("rolePill").textContent=profile.role.toUpperCase();
+  $("staffTabButton").classList.toggle("hidden",profile.role!=="admin");
+  await loadCustomers();
+}
+
+async function loadCustomers(){
+  const {data,error}=await sb.from("customers").select("*").order("created_at",{ascending:false});
+  if(error){toast(error.message);return}
+  customers=data||[];
+  $("statCustomers").textContent=customers.length;
+  $("statActive").textContent=customers.filter(c=>c.active).length;
+  renderCustomerList();
+  fillSelects();
+}
+
+function renderCustomerList(){
+  $("customerList").innerHTML=customers.map(c=>`
+    <div class="item">
+      <div class="itemhead">
+        <div><b>${esc(c.business_name)}</b><div class="muted">${esc(c.slug)} · ${c.active?"Active":"Suspended"} · Mobile: ${esc(c.phone||"Not set")}</div></div>
+        <div class="row">
+          <button class="secondary" data-edit="${c.id}">Edit</button>
+          <button class="secondary" data-open="${c.id}">Links / QR</button>
+          <button class="secondary" data-menu="${c.id}">Menu</button>
+        </div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <a href="${esc(pageUrl(c))}" target="_blank" rel="noopener">Customer Page</a>
+        <span>·</span>
+        <a href="${esc(manageUrl(c))}" target="_blank" rel="noopener">Shop Owner Menu Link</a>
+      </div>
+    </div>
+  `).join("")||'<p class="muted">No customers added yet.</p>';
+
+  $("customerList").querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editCustomer(b.dataset.edit));
+  $("customerList").querySelectorAll("[data-open]").forEach(b=>b.onclick=()=>{$("linkCustomer").value=b.dataset.open;loadLinkWorkspace();switchTab("linksTab")});
+  $("customerList").querySelectorAll("[data-menu]").forEach(b=>b.onclick=()=>{$("menuCustomer").value=b.dataset.menu;loadAdminMenuWorkspace();switchTab("menuTab")});
+}
+
+function fillSelects(){
+  for(const id of ["linkCustomer","analyticsCustomer","menuCustomer"]){
+    const el=$(id),old=el.value;
+    el.innerHTML='<option value="">Choose a business</option>'+customers.map(c=>`<option value="${c.id}">${esc(c.business_name)}</option>`).join("");
+    if(customers.some(c=>c.id===old))el.value=old;
+  }
+}
+
+function showCustomerForm(c=null){
+  $("customerForm").classList.remove("hidden");
+  $("customerFormTitle").textContent=c?"Edit business":"Add business";
+  $("customerId").value=c?.id||"";
+  $("cName").value=c?.business_name||"";
+  $("cSlug").value=c?.slug||"";
+  $("cPhone").value=c?.phone||"";
+  $("cCategory").value=c?.category||"";
+  $("cLogo").value=c?.logo_url||"";
+  $("cColor").value=c?.background_color||"#ffffff";
+  $("cWelcome").value=c?.welcome_text||"";
+  $("cActive").value=String(c?.active??true);
+}
+function editCustomer(id){const c=customers.find(x=>x.id===id);if(c)showCustomerForm(c)}
+
+async function saveCustomer(){
+  try{
+    const id=$("customerId").value;
+    const name=$("cName").value.trim();
+    const slug=slugify($("cSlug").value||name);
+    const file=$("cLogoFile").files[0];
+    if(!name||!slug){toast("Business name and slug are required");return}
+    if(file && file.size>2*1024*1024){toast("Logo must be 2 MB or smaller");return}
+
+    const payload={
+      business_name:name, slug,
+      phone:$("cPhone").value.trim(),
+      category:$("cCategory").value.trim(),
+      logo_url:$("cLogo").value.trim()||null,
+      background_color:$("cColor").value,
+      welcome_text:$("cWelcome").value.trim(),
+      active:$("cActive").value==="true"
+    };
+
+    let res = id
+      ? await sb.from("customers").update(payload).eq("id",id).select("id").single()
+      : await sb.from("customers").insert(payload).select("id").single();
+
+    if(res.error){toast(res.error.message);return}
+    const customerId=res.data.id;
+
+    if(file){
+      const ext=file.type==="image/png"?"png":file.type==="image/webp"?"webp":"jpg";
+      const path=customerId+"/business-logo-"+Date.now()+"."+ext;
+      const upload=await sb.storage.from("service-logos").upload(path,file,{contentType:file.type,upsert:true});
+      if(upload.error){toast("Image upload failed: "+upload.error.message);return}
+      const imageUrl=sb.storage.from("service-logos").getPublicUrl(path).data.publicUrl;
+      await sb.from("customers").update({logo_url:imageUrl}).eq("id",customerId);
+    }
+
+    $("customerForm").classList.add("hidden");
+    $("cLogoFile").value="";
+    toast("Customer saved successfully");
+    await loadCustomers();
+  }catch(error){toast("Save failed: "+error.message)}
+}
+
+function switchTab(id){
+  document.querySelectorAll(".tabpane").forEach(x=>x.classList.add("hidden"));
+  $(id).classList.remove("hidden");
+  document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.tab===id));
+}
+
+async function loadLinkWorkspace(){
+  const id=$("linkCustomer").value;
+  selectedCustomer=customers.find(c=>c.id===id);
+  $("linkWorkspace").classList.toggle("hidden",!selectedCustomer);
+  if(!selectedCustomer)return;
+  $("pageUrl").textContent=pageUrl(selectedCustomer);
+  $("ownerManageUrl").textContent=manageUrl(selectedCustomer);
+  $("qrcode").innerHTML="";
+  qr=new QRCode($("qrcode"),{text:pageUrl(selectedCustomer),width:220,height:220,colorDark:"#111827",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});
+  await loadLinks();
+}
+
+async function loadLinks(){
+  const {data,error}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");
+  if(error){toast(error.message);return}
+  $("linkList").innerHTML="<h3 style='margin-top:18px'>Existing links</h3>"+(data||[]).map(l=>`
+    <div class="item">
+      <div class="itemhead">
+        <div><b>${esc(l.label)}</b><div class="muted">${esc(l.link_type)}</div></div>
+        <div class="row">
+          <button class="secondary" data-up="${l.id}">↑</button>
+          <button class="secondary" data-down="${l.id}">↓</button>
+          <button class="danger" data-del="${l.id}">Delete</button>
+        </div>
+      </div>
+      <div class="muted">${esc(l.url)}</div>
+    </div>
+  `).join("")||'<p class="muted">No links yet.</p>';
+
+  $("linkList").querySelectorAll("[data-del]").forEach(b=>b.onclick=async()=>{if(confirm("Delete this link?")){await sb.from("business_links").delete().eq("id",b.dataset.del);loadLinks()}});
+  $("linkList").querySelectorAll("[data-up],[data-down]").forEach(b=>b.onclick=()=>moveLink(b.dataset.up||b.dataset.down,b.hasAttribute("data-up")?-1:1));
+}
+
+async function moveLink(id,delta){
+  const {data}=await sb.from("business_links").select("*").eq("customer_id",selectedCustomer.id).order("position");
+  const a=data||[],i=a.findIndex(x=>x.id===id),j=i+delta;
+  if(i<0||j<0||j>=a.length)return;
+  const p1=a[i].position,p2=a[j].position;
+  await sb.from("business_links").update({position:p2}).eq("id",a[i].id);
+  await sb.from("business_links").update({position:p1}).eq("id",a[j].id);
+  loadLinks();
+}
+
+async function uploadServiceLogo(file){
+  if(!file)return null;
+  if(file.size>2*1024*1024)throw new Error("Logo must be 2 MB or smaller");
+  const ext=({"image/png":"png","image/jpeg":"jpg","image/webp":"webp","image/svg+xml":"svg"})[file.type]||"png";
+  const path=`${selectedCustomer.id}/${crypto.randomUUID?crypto.randomUUID():Date.now()}.${ext}`;
+  const {error}=await sb.storage.from("service-logos").upload(path,file,{contentType:file.type,upsert:false});
+  if(error)throw new Error("Logo upload failed: "+error.message);
+  return sb.storage.from("service-logos").getPublicUrl(path).data.publicUrl;
+}
+
+async function addLink(){
+  const label=$("lLabel").value.trim(),type=$("lType").value,file=$("lLogoFile").files[0];
+  let url=$("lUrl").value.trim();
+  if(!label){toast("Enter a button label");return}
+  if(type==="Menu / Catalogue" && !url) url="#menu";
+  if(!url){toast("Enter a destination URL");return}
+
+  const btn=$("addLinkBtn");btn.disabled=true;
+  try{
+    const icon_url=await uploadServiceLogo(file);
+    const {count}=await sb.from("business_links").select("*",{count:"exact",head:true}).eq("customer_id",selectedCustomer.id);
+    const r=await sb.from("business_links").insert({customer_id:selectedCustomer.id,label,url,link_type:type,icon_url,position:count||0});
+    if(r.error)throw new Error(r.error.message);
+    $("lLabel").value="";$("lUrl").value="";$("lLogoFile").value="";
+    await loadLinks();toast("Link added successfully");
+  }catch(e){toast(e.message)}
+  finally{btn.disabled=false}
+}
+
+/* Admin Digital Menu Workspace */
+async function loadAdminMenuWorkspace(){
+  const cid = $("menuCustomer").value;
+  $("menuWorkspace").classList.toggle("hidden", !cid);
+  if(!cid) return;
+
+  const {data:cats} = await sb.from("menu_categories").select("*").eq("customer_id",cid).order("position");
+  const {data:items} = await sb.from("menu_items").select("*").eq("customer_id",cid).order("position");
+
+  $("adminItemCat").innerHTML = (cats||[]).map(c=>`<option value="${esc(c.id)}">${esc(c.name)}</option>`).join("") || `<option value="">Add category first</option>`;
+
+  $("adminMenuTree").innerHTML = (cats||[]).map(cat => {
+    const cItems = (items||[]).filter(i => i.category_id === cat.id);
+    return `<div class="item">
+      <div class="itemhead"><b>${esc(cat.name)}</b><button class="danger" data-admin-delcat="${esc(cat.id)}">Delete Category</button></div>
+      ${cItems.map(it=>`
+        <div class="menu-row">
+          <div><b>${esc(it.name)}</b> ${it.description?`<div class="muted">${esc(it.description)}</div>`:""}</div>
+          <div class="row"><span class="menu-price">₹${Number(it.price||0).toFixed(0)}</span><button class="danger" style="padding:6px 10px" data-admin-delitem="${esc(it.id)}">✕</button></div>
+        </div>
+      `).join("") || "<p class='muted'>No items yet.</p>"}
+    </div>`;
+  }).join("") || "<p class='muted'>No menu categories yet.</p>";
+
+  $("adminMenuTree").querySelectorAll("[data-admin-delcat]").forEach(b=>b.onclick=async()=>{
+    await sb.from("menu_categories").delete().eq("id",b.dataset.adminDelcat);
+    loadAdminMenuWorkspace();
+  });
+  $("adminMenuTree").querySelectorAll("[data-admin-delitem]").forEach(b=>b.onclick=async()=>{
+    await sb.from("menu_items").delete().eq("id",b.dataset.adminDelitem);
+    loadAdminMenuWorkspace();
+  });
+}
+
+$("adminAddCatBtn").onclick = async () => {
+  const cid = $("menuCustomer").value, name = $("adminNewCatName").value.trim();
+  if(!cid || !name) return toast("Select business and enter category name");
+  await sb.from("menu_categories").insert({customer_id:cid, name, active:true});
+  $("adminNewCatName").value="";
+  loadAdminMenuWorkspace();
+};
+
+$("adminAddItemBtn").onclick = async () => {
+  const cid = $("menuCustomer").value, category_id = $("adminItemCat").value;
+  const name = $("adminItemName").value.trim(), price = parseFloat($("adminItemPrice").value)||0, description = $("adminItemDesc").value.trim();
+  if(!cid || !category_id || !name) return toast("Category and item name required");
+  await sb.from("menu_items").insert({customer_id:cid, category_id, name, price, description, available:true});
+  $("adminItemName").value=""; $("adminItemPrice").value=""; $("adminItemDesc").value="";
+  loadAdminMenuWorkspace();
+};
+
+$("adminScanMenuBtn").onclick = () => runImageToMenuOCR($("adminMenuImgInput"), $("adminOcrStatus"), $("adminOcrPreview"), $("adminOcrRows"));
+$("adminAddOcrRowBtn").onclick = () => appendOcrRow($("adminOcrRows"));
+$("adminSaveOcrBtn").onclick = async () => {
+  const cid = $("menuCustomer").value;
+  const sections = collectOcrSections($("adminOcrRows"));
+  if(!cid || !sections.length) return toast("No items to save");
+
+  for(const sec of sections){
+    let {data:existing} = await sb.from("menu_categories").select("id").eq("customer_id",cid).ilike("name",sec.category).limit(1);
+    let catId = existing?.[0]?.id;
+    if(!catId){
+      const ins = await sb.from("menu_categories").insert({customer_id:cid, name:sec.category, active:true}).select("id").single();
+      catId = ins.data.id;
+    }
+    for(const it of sec.items){
+      await sb.from("menu_items").insert({customer_id:cid, category_id:catId, name:it.name, price:it.price, available:true});
+    }
+  }
+  $("adminOcrPreview").classList.add("hidden");
+  $("adminOcrStatus").textContent = "Menu items saved!";
+  loadAdminMenuWorkspace();
+  toast("Digital menu imported successfully");
+};
+
+async function loadAnalytics(){
+  const id=$("analyticsCustomer").value;if(!id)return;
+  const {data,error}=await sb.from("scan_events").select("event_type,link_id,session_id,created_at").eq("customer_id",id);
+  if(error){toast(error.message);return}
+  const rows=data||[],views=rows.filter(x=>x.event_type==="page_view"),clicks=rows.filter(x=>x.event_type==="button_click");
+  $("aViews").textContent=views.length;$("aClicks").textContent=clicks.length;$("aSessions").textContent=new Set(views.map(x=>x.session_id).filter(Boolean)).size;
+  const {data:links}=await sb.from("business_links").select("id,label").eq("customer_id",id);
+  $("analyticsRows").innerHTML=(links||[]).map(l=>`<div class="item"><b>${esc(l.label)}</b><span style="float:right">${clicks.filter(x=>x.link_id===l.id).length} clicks</span></div>`).join("")||'<p class="muted">No activity yet.</p>';
+  $("statEvents").textContent=rows.length;
+}
+
+$("loginBtn").onclick=async()=>{const {error}=await sb.auth.signInWithPassword({email:$("email").value,password:$("password").value});if(error)msg($("authMsg"),error.message,true)};
+$("resetBtn").onclick=async()=>{const {error}=await sb.auth.resetPasswordForEmail($("email").value,{redirectTo:location.origin+location.pathname});msg($("authMsg"),error?"Could not send reset email: "+error.message:"Reset link sent if email exists.",!!error)};
+$("logoutBtn").onclick=async()=>sb.auth.signOut();
+$("newCustomerBtn").onclick=()=>showCustomerForm();
+$("cancelCustomerBtn").onclick=()=>$("customerForm").classList.add("hidden");
+$("saveCustomerBtn").onclick=saveCustomer;
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+$("linkCustomer").onchange=loadLinkWorkspace;
+$("menuCustomer").onchange=loadAdminMenuWorkspace;
+$("addLinkBtn").onclick=addLink;
+$("analyticsCustomer").onchange=loadAnalytics;
+$("downloadQrBtn").onclick=()=>{const img=$("qrcode").querySelector("img"),canvas=$("qrcode").querySelector("canvas");const data=img?.src||canvas?.toDataURL("image/png");if(!data){toast("QR not ready");return}const a=document.createElement("a");a.href=data;a.download=(selectedCustomer?.slug||"business")+"-qr.png";a.click()};
+$("copyUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("pageUrl").textContent);toast("Customer URL copied")}catch{toast("Copy manually")}};
+$("copyOwnerUrlBtn").onclick=async()=>{try{await navigator.clipboard.writeText($("ownerManageUrl").textContent);toast("Shop owner menu link copied")}catch{toast("Copy manually")}};
+$("writeNfcBtn").onclick=async()=>{const out=$("nfcMsg");out.classList.remove("hidden");if(!("NDEFReader" in window)){msg(out,"Web NFC not supported in this browser.",true);return}try{const ndef=new NDEFReader();await ndef.write({records:[{recordType:"url",data:pageUrl(selectedCustomer)}]});msg(out,"NFC tag written successfully.");}catch(e){msg(out,"NFC write failed: "+e.message,true)}};
+
+$("addLinkBtn").addEventListener("click", function(e) {
+  if ($("lType").value !== "UPI Payment") return;
+  const upi = $("lUrl").value.trim().replace(/\s/g, "");
+  if (!/^[A-Za-z0-9._-]+@[A-Za-z0-9.-]+$/.test(upi)) {
+    e.stopImmediatePropagation();
+    e.preventDefault();
+    toast("Enter a valid UPI ID, e.g. shop@okaxis");
+    return;
+  }
+  $("lUrl").value = "upi://pay?" + new URLSearchParams({
+    pa: upi, pn: selectedCustomer.business_name, cu: "INR"
+  }).toString();
+}, true);
+
+window.addEventListener("load",init);
+})();
+</script>
+</body>
+</html>
