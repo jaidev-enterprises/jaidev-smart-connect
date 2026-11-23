@@ -761,7 +761,8 @@ async function init(){
    UNIVERSAL LINK & IMAGE MENU EXTRACTOR (WITH GST DETECTION)
    ========================================================= */
 function parseStructuredMenuLines(rawText, defaultCat="Menu", imageElement=null, lineBoxes=null){
-  const lines = rawText.split(/?
+  const lines = rawText.split(/
+?
 /).map(l => l.trim()).filter(l => l.length >= 2);
   const extracted = [];
   let currentCategory = defaultCat;
