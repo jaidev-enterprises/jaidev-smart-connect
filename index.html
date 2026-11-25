@@ -1435,7 +1435,8 @@ Total: ₹${totals.total.toFixed(2)}`
 
       let imported = getMenuList();
       if (rawLines) {
-        imported = rawLines.split(/?
+        imported = rawLines.split(/
+?
 /).map((line, idx) => {
           const [itemName, cat, priceVal, gstVal] = line.split("|").map(s => (s || "").trim());
           return {
